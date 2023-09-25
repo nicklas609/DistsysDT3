@@ -10,7 +10,6 @@
 
 # d - In case messages can be delayed or lost, how does your implementation handle message loss?
 * To handle message loss, our implementation check if ackowledgements to all messages have been received, and if not the message is re-send.
-* IMPROVEMENT: Handle duplicates, in case we re-send some messages before receiving ackowledgement.
 
 # e - Why is the 3-way handshake important?
 * The 3-way handshake is important, to ensure there is a mutual/agreed connection between server and client.

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"time"
 )
 
@@ -22,6 +23,7 @@ var data_chan = make(chan datapackage)
 
 func client() {
 	var seq = 0
+	Amount_packages := 6
 
 	syn_ack <- seq
 
@@ -34,32 +36,37 @@ func client() {
 		syn_ack <- ack
 		syn_ack <- seq
 
-		var ack_array [6]int
-		var datapackage_array [6]datapackage
+		//var ack_array [6]int
+		//var datapackage_array [6]datapackage
 
-		for i := 0; i < 6; i++ {
-			datapackage_array[i] = datapackage{21, 53, ack + 1, seq, messages[i], 1, 6}
-			data_chan <- datapackage_array[i]
+		var ack_slice = make([]int, Amount_packages)
+		var datapackage_slice = make([]datapackage, Amount_packages)
+
+		for i := 0; i < len(datapackage_slice); i++ {
+			datapackage_slice[i] = datapackage{21, 53, ack + 1, seq, messages[i], 1, Amount_packages}
+			data_chan <- datapackage_slice[i]
 			ack = <-syn_ack
-			ack_array[i] = ack
+			ack_slice[i] = ack
 		}
 
-		for i := 0; i < len(datapackage_array); i++ {
+		for i := 0; i < len(datapackage_slice); i++ {
 			var ok = false
-			for j := 0; j < len(ack_array); j++ {
-				if ack_array[j] == datapackage_array[i].seq_num {
+			for j := 0; j < len(ack_slice); j++ {
+				if ack_slice[j] == datapackage_slice[i].seq_num {
 					ok = true
 					break
 				}
 			}
 			if !ok {
-				data_chan <- datapackage_array[i]
+				data_chan <- datapackage_slice[i]
 			}
 		}
 	}
 }
 
 func server() {
+	packages := map[datapackage]bool{}
+
 	var ack = <-syn_ack + 1
 	var seq = 100
 
@@ -76,36 +83,35 @@ func server() {
 		var received_data = <-data_chan
 		syn_ack <- received_data.seq_num
 
-		var datapackagearray [6]datapackage
-		datapackagearray[0] = received_data
+		//var datapackagearray [6]datapackage
+		//datapackagearray[0] = received_data
+
+		var datapackageSlice = make([]datapackage, received_data.length)
+		datapackageSlice[0] = received_data
 
 		for i := 1; i < received_data.length; i++ {
 			received_data = <-data_chan
 			syn_ack <- received_data.seq_num
-			datapackagearray[i] = received_data
-		}
 
-		datapackagearray = sort(datapackagearray)
+			if packages[received_data] {
+				//if dublicate go back in the interator
+				i--
 
-		for i := 0; i < len(datapackagearray); i++ {
-			fmt.Println("Sorted data: ", datapackagearray[i].data)
-		}
-	}
-}
-
-func sort(array [6]datapackage) [6]datapackage {
-	for i := 0; i < len(array); i++ {
-
-		for j := i; j > 0; j-- {
-			if array[j].seq_num < array[j-1].seq_num {
-				var temp1 = array[j]
-				var temp2 = array[j-1]
-				array[j] = temp2
-				array[j-1] = temp1
+			} else {
+				packages[received_data] = true
+				datapackageSlice[i] = received_data
 			}
+
 		}
+
+		sort.Slice(datapackageSlice, func(i, j int) bool {
+			return datapackageSlice[i].seq_num < datapackageSlice[j].seq_num
+		})
+		for _, v := range datapackageSlice {
+			fmt.Println(v.data)
+		}
+
 	}
-	return array
 }
 
 func main() {
