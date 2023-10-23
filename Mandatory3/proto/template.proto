@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "proto/proto";
+
+package proto;
+
+service Template
+{
+    rpc SayHi (stream Greeting) returns (stream Farewell);
+}
+
+message Greeting {
+    string clientName = 1;
+    string message = 2;
+    
+}
+
+message Farewell {
+    string message = 1;
+}
