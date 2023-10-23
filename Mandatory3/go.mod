@@ -1,4 +1,4 @@
-module github.com/MarcusKofoedKirkegaard/gRPC-Exercises.git
+module github.com/nicklas609/DistsysDT3.git/tree/main/Mandatory3
 
 go 1.21.0
 

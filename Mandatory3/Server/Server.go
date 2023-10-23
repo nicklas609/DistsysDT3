@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	proto "github.com/MarcusKofoedKirkegaard/gRPC-Exercises.git/proto"
+	proto "github.com/nicklas609/DistsysDT3.git/tree/main/Mandatory3/proto"
 
 	"strconv"
 	"time"
