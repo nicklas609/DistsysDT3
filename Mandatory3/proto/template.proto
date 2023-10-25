@@ -4,17 +4,15 @@ option go_package = "proto/proto";
 
 package proto;
 
-service Template
-{
-    rpc SayHi (stream Greeting) returns (stream Farewell);
-}
-
-message Greeting {
-    string clientName = 1;
-    string message = 2;
-    
-}
-
-message Farewell {
-    string message = 1;
-}
+message AskForTimeMessage {
+    int64 clientId = 1;
+  }
+  
+  message TimeMessage {
+    string serverName = 1;
+    string time = 2;
+  }
+  
+  service TimeAsk {
+    rpc AskForTime(AskForTimeMessage) returns (TimeMessage);
+  }

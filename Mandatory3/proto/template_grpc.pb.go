@@ -19,123 +19,91 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Template_SayHi_FullMethodName = "/proto.Template/SayHi"
+	TimeAsk_AskForTime_FullMethodName = "/proto.TimeAsk/AskForTime"
 )
 
-// TemplateClient is the client API for Template service.
+// TimeAskClient is the client API for TimeAsk service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type TemplateClient interface {
-	SayHi(ctx context.Context, opts ...grpc.CallOption) (Template_SayHiClient, error)
+type TimeAskClient interface {
+	AskForTime(ctx context.Context, in *AskForTimeMessage, opts ...grpc.CallOption) (*TimeMessage, error)
 }
 
-type templateClient struct {
+type timeAskClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewTemplateClient(cc grpc.ClientConnInterface) TemplateClient {
-	return &templateClient{cc}
+func NewTimeAskClient(cc grpc.ClientConnInterface) TimeAskClient {
+	return &timeAskClient{cc}
 }
 
-func (c *templateClient) SayHi(ctx context.Context, opts ...grpc.CallOption) (Template_SayHiClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Template_ServiceDesc.Streams[0], Template_SayHi_FullMethodName, opts...)
+func (c *timeAskClient) AskForTime(ctx context.Context, in *AskForTimeMessage, opts ...grpc.CallOption) (*TimeMessage, error) {
+	out := new(TimeMessage)
+	err := c.cc.Invoke(ctx, TimeAsk_AskForTime_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &templateSayHiClient{stream}
-	return x, nil
+	return out, nil
 }
 
-type Template_SayHiClient interface {
-	Send(*Greeting) error
-	Recv() (*Farewell, error)
-	grpc.ClientStream
-}
-
-type templateSayHiClient struct {
-	grpc.ClientStream
-}
-
-func (x *templateSayHiClient) Send(m *Greeting) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *templateSayHiClient) Recv() (*Farewell, error) {
-	m := new(Farewell)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-// TemplateServer is the server API for Template service.
-// All implementations must embed UnimplementedTemplateServer
+// TimeAskServer is the server API for TimeAsk service.
+// All implementations must embed UnimplementedTimeAskServer
 // for forward compatibility
-type TemplateServer interface {
-	SayHi(Template_SayHiServer) error
-	mustEmbedUnimplementedTemplateServer()
+type TimeAskServer interface {
+	AskForTime(context.Context, *AskForTimeMessage) (*TimeMessage, error)
+	mustEmbedUnimplementedTimeAskServer()
 }
 
-// UnimplementedTemplateServer must be embedded to have forward compatible implementations.
-type UnimplementedTemplateServer struct {
+// UnimplementedTimeAskServer must be embedded to have forward compatible implementations.
+type UnimplementedTimeAskServer struct {
 }
 
-func (UnimplementedTemplateServer) SayHi(Template_SayHiServer) error {
-	return status.Errorf(codes.Unimplemented, "method SayHi not implemented")
+func (UnimplementedTimeAskServer) AskForTime(context.Context, *AskForTimeMessage) (*TimeMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AskForTime not implemented")
 }
-func (UnimplementedTemplateServer) mustEmbedUnimplementedTemplateServer() {}
+func (UnimplementedTimeAskServer) mustEmbedUnimplementedTimeAskServer() {}
 
-// UnsafeTemplateServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to TemplateServer will
+// UnsafeTimeAskServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TimeAskServer will
 // result in compilation errors.
-type UnsafeTemplateServer interface {
-	mustEmbedUnimplementedTemplateServer()
+type UnsafeTimeAskServer interface {
+	mustEmbedUnimplementedTimeAskServer()
 }
 
-func RegisterTemplateServer(s grpc.ServiceRegistrar, srv TemplateServer) {
-	s.RegisterService(&Template_ServiceDesc, srv)
+func RegisterTimeAskServer(s grpc.ServiceRegistrar, srv TimeAskServer) {
+	s.RegisterService(&TimeAsk_ServiceDesc, srv)
 }
 
-func _Template_SayHi_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(TemplateServer).SayHi(&templateSayHiServer{stream})
-}
-
-type Template_SayHiServer interface {
-	Send(*Farewell) error
-	Recv() (*Greeting, error)
-	grpc.ServerStream
-}
-
-type templateSayHiServer struct {
-	grpc.ServerStream
-}
-
-func (x *templateSayHiServer) Send(m *Farewell) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *templateSayHiServer) Recv() (*Greeting, error) {
-	m := new(Greeting)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _TimeAsk_AskForTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AskForTimeMessage)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(TimeAskServer).AskForTime(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TimeAsk_AskForTime_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimeAskServer).AskForTime(ctx, req.(*AskForTimeMessage))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-// Template_ServiceDesc is the grpc.ServiceDesc for Template service.
+// TimeAsk_ServiceDesc is the grpc.ServiceDesc for TimeAsk service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Template_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.Template",
-	HandlerType: (*TemplateServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+var TimeAsk_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.TimeAsk",
+	HandlerType: (*TimeAskServer)(nil),
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "SayHi",
-			Handler:       _Template_SayHi_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
+			MethodName: "AskForTime",
+			Handler:    _TimeAsk_AskForTime_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/template.proto",
 }

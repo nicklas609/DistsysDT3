@@ -5,20 +5,18 @@ import (
 	"flag"
 	"log"
 	"net"
-
-	proto "github.com/nicklas609/DistsysDT3.git/tree/main/Mandatory3/proto"
-
 	"strconv"
 	"time"
 
+	proto "github.com/nicklas609/DistsysDT3.git/tree/main/Mandatory3/proto"
 	"google.golang.org/grpc"
 )
 
 // Struct that will be used to represent the Server.
 type Server struct {
-	proto.UnimplementedTemplateServer // Necessary
-	name                              string
-	port                              int
+	proto.UnimplementedTimeAskServer // Necessary
+	name                             string
+	port                             int
 }
 
 // Used to get the user-defined port for the server from the command line
@@ -57,7 +55,7 @@ func startServer(server *Server) {
 	log.Printf("Started server at port: %d\n", server.port)
 
 	// Register the grpc server and serve its listener
-	proto.RegisterFarewellServer(grpcServer, server)
+	proto.RegisterTimeAskServer(grpcServer, server)
 	serveError := grpcServer.Serve(listener)
 	if serveError != nil {
 		log.Fatalf("Could not serve listener")
