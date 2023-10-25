@@ -34,37 +34,62 @@ func main() {
 	}
 
 	// Wait for the client (user) to ask for the time
-	go waitForTimeRequest(client)
+	// go waitForTimeRequest(client)
+	go publishMessage(client)
 
 	for {
 
 	}
 }
 
-func waitForTimeRequest(client *Client) {
-	// Connect to the server
+func publishMessage(client *Client) {
 	serverConnection, _ := connectToServer()
 
-	// Wait for input in the client terminal
 	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		input := scanner.Text()
-		log.Printf("Client asked for time with input: %s\n", input)
 
-		// Ask the server for the time
-		timeReturnMessage, err := serverConnection.AskForTime(context.Background(), &proto.AskForTimeMessage{
+	for scanner.Scan() {
+
+		input := scanner.Text()
+
+		log.Printf("Client wants to publish a message: %s\n", input)
+
+		publishReturnMessage, err := serverConnection.PublishReceive(context.Background(), &proto.Publish{
 			ClientId: int64(client.id),
+			Content:  input,
 		})
 
 		if err != nil {
 			log.Printf(err.Error())
 		} else {
-			log.Printf("Server %s says the time is %s\n", timeReturnMessage.ServerName, timeReturnMessage.Time)
+			log.Printf("Server %s says the message is %s\n", publishReturnMessage.ServerName, publishReturnMessage.Content)
 		}
 	}
 }
 
-func connectToServer() (proto.TimeAskClient, error) {
+// func waitForTimeRequest(client *Client) {
+// 	// Connect to the server
+// 	serverConnection, _ := connectToServer()
+
+// 	// Wait for input in the client terminal
+// 	scanner := bufio.NewScanner(os.Stdin)
+// 	for scanner.Scan() {
+// 		input := scanner.Text()
+// 		log.Printf("Client asked for time with input: %s\n", input)
+
+// 		// Ask the server for the time
+// 		timeReturnMessage, err := serverConnection.PublishReceive(context.Background(), &proto.AskForTimeMessage{
+// 			ClientId: int64(client.id),
+// 		})
+
+// 		if err != nil {
+// 			log.Printf(err.Error())
+// 		} else {
+// 			log.Printf("Server %s says the time is %s\n", timeReturnMessage.ServerName, timeReturnMessage.Time)
+// 		}
+// 	}
+// }
+
+func connectToServer() (proto.BroadcastClient, error) {
 	// Dial the server at the specified port.
 	conn, err := grpc.Dial("localhost:"+strconv.Itoa(*serverPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -72,5 +97,5 @@ func connectToServer() (proto.TimeAskClient, error) {
 	} else {
 		log.Printf("Connected to the server at port %d\n", *serverPort)
 	}
-	return proto.NewTimeAskClient(conn), nil
+	return proto.NewBroadcastClient(conn), nil
 }

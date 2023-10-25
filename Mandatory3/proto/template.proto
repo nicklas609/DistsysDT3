@@ -6,13 +6,30 @@ package proto;
 
 message AskForTimeMessage {
     int64 clientId = 1;
-  }
+}
   
-  message TimeMessage {
+message TimeMessage {
     string serverName = 1;
     string time = 2;
-  }
+}
   
-  service TimeAsk {
+service TimeAsk {
     rpc AskForTime(AskForTimeMessage) returns (TimeMessage);
-  }
+}
+
+message Publish {
+    int64 clientId = 1;
+    string content = 2;
+    //Lamport
+}
+
+message BroadcastMessage {
+    string serverName = 1;
+    int64 senderClientId = 2;
+    string content = 3;
+}
+
+service Broadcast {
+    rpc PublishReceive(Publish) returns (BroadcastMessage);
+}
+
