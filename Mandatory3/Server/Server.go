@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"io"
 	"log"
 	"net"
 	"strconv"
@@ -18,6 +19,8 @@ type Server struct {
 	name                               string
 	port                               int
 }
+
+var streams = make([]proto.Broadcast_PublishReceiveServer, 0)
 
 // Used to get the user-defined port for the server from the command line
 var port = flag.Int("port", 0, "server port number")
@@ -70,11 +73,38 @@ func (c *Server) AskForTime(ctx context.Context, in *proto.AskForTimeMessage) (*
 	}, nil
 }
 
-func (client *Server) PublishReceive(ctx context.Context, in *proto.Publish) (*proto.BroadcastMessage, error) {
-	log.Printf("Client with ID %d published a message\n", in.ClientId)
-	return &proto.BroadcastMessage{
-		Content:        in.Content,
-		ServerName:     client.name,
-		SenderClientId: in.ClientId,
-	}, nil
+// func (client *Server) PublishReceive(ctx context.Context, in *proto.Publish) (*proto.BroadcastMessage, error) {
+// 	log.Printf("Client with ID %d published a message\n", in.ClientId)
+// 	return &proto.BroadcastMessage{
+// 		Content:        in.Content,
+// 		ServerName:     client.name,
+// 		SenderClientId: in.ClientId,
+// 	}, nil
+
+// }
+
+func (s *Server) PublishReceive(stream proto.Broadcast_PublishReceiveServer) error {
+
+	streams = append(streams, stream)
+
+	for {
+
+		in, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		if in != nil {
+
+			log.Print(in.Content)
+
+		}
+		for _, s := range streams {
+
+			s.Send(in)
+		}
+		//stream.Send(in)
+	}
 }

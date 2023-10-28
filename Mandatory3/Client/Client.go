@@ -21,6 +21,7 @@ type Client struct {
 var (
 	clientPort = flag.Int("cPort", 0, "client port number")
 	serverPort = flag.Int("sPort", 0, "server port number (should match the port used for the server)")
+	waitc      = make(chan struct{})
 )
 
 func main() {
@@ -35,36 +36,100 @@ func main() {
 
 	// Wait for the client (user) to ask for the time
 	// go waitForTimeRequest(client)
-	go publishMessage(client)
+	serverConnection, _ := connectToServer()
+	stream, err := serverConnection.PublishReceive(context.Background())
+
+	if err != nil {
+		print("what")
+	}
+	go sendMessage(client, stream)
+	go publishMessage(client, stream)
 
 	for {
 
 	}
 }
 
-func publishMessage(client *Client) {
-	serverConnection, _ := connectToServer()
+func sendMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 
+	//stream, err := serverConnection.PublishReceive(context.Background())
+
+	// if err != nil {
+
+	// 	print("what")
+	// }
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
 
+		// publishReturnMessage, err := serverConnection.PublishReceive(context.Background(), &proto.Publish{
+		// 	ClientId: int64(client.id),
+		// 	Content:  input,
+		// })
 		input := scanner.Text()
+		message := &proto.Publish{
 
-		log.Printf("Client wants to publish a message: %s\n", input)
-
-		publishReturnMessage, err := serverConnection.PublishReceive(context.Background(), &proto.Publish{
 			ClientId: int64(client.id),
 			Content:  input,
-		})
-
-		if err != nil {
-			log.Printf(err.Error())
-		} else {
-			log.Printf("Server %s says the message is %s\n", publishReturnMessage.ServerName, publishReturnMessage.Content)
 		}
+
+		//var message = serverConnection.PublishReceive(context).Publish
+
+		if err := stream.Send(message); err != nil {
+			log.Fatalf("Failed to send a note: %v", err)
+		}
+
 	}
+
 }
+
+func publishMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
+
+	// stream, err := serverConnection.PublishReceive(context.Background())
+	// if err != nil {
+
+	// 	print("what")
+	// }
+
+	for {
+		//log.Printf("I am here")
+		in, err := stream.Recv()
+		// if err == io.EOF {
+		// 	// read done.
+		// 	close(waitc)
+		// 	return
+		// }
+		if err != nil {
+			log.Fatalf("Failed to receive a note : %v", err)
+		}
+		log.Printf(in.Content)
+	}
+
+}
+
+// func publishMessage(client *Client) {
+// 	serverConnection, _ := connectToServer()
+
+// 	scanner := bufio.NewScanner(os.Stdin)
+
+// 	for scanner.Scan() {
+
+// 		input := scanner.Text()
+
+// 		log.Printf("Client wants to publish a message: %s\n", input)
+
+// 		publishReturnMessage, err := serverConnection.PublishReceive(context.Background(), &proto.Publish{
+// 			ClientId: int64(client.id),
+// 			Content:  input,
+// 		})
+
+// 		if err != nil {
+// 			log.Printf(err.Error())
+// 		} else {
+// 			log.Printf("Server %s says the message is %s\n", publishReturnMessage.ServerName, publishReturnMessage.Content)
+// 		}
+// 	}
+// }
 
 // func waitForTimeRequest(client *Client) {
 // 	// Connect to the server
