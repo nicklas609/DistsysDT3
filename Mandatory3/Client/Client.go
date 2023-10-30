@@ -20,9 +20,9 @@ type Client struct {
 }
 
 var (
-	clientPort = flag.Int("cPort", 0, "client port number")
-	serverPort = flag.Int("sPort", 0, "server port number (should match the port used for the server)")
-	waitc      = make(chan int)
+	clientPort      = flag.Int("cPort", 0, "client port number")
+	serverPort      = flag.Int("sPort", 0, "server port number (should match the port used for the server)")
+	ClientTimeStamp = int64(1)
 )
 
 var connected = false
@@ -81,14 +81,16 @@ func sendMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 		// 	Content:  input,
 		// })
 		input := scanner.Text()
+		ClientTimeStamp++
 
 		if input == "!quit" {
 			connected = false
 		} else {
 			message := &proto.Publish{
 
-				ClientId: int64(client.id),
-				Content:  input,
+				ClientId:  int64(client.id),
+				Content:   input,
+				TimeStamp: ClientTimeStamp,
 			}
 
 			//var message = serverConnection.PublishReceive(context).Publish
@@ -121,7 +123,12 @@ func publishMessage(client *Client, stream proto.Broadcast_PublishReceiveClient)
 		if err != nil {
 			log.Fatalf("Failed to receive a note : %v", err)
 		}
-		log.Print("Participant ", in.ClientId, " ", in.Content, " at Lamport time ")
+
+		if in.TimeStamp > ClientTimeStamp {
+
+			ClientTimeStamp = in.TimeStamp
+		}
+		log.Print("Participant ", in.ClientId, " ", in.Content, " at Lamport time ", in.TimeStamp)
 	}
 
 }
@@ -129,8 +136,9 @@ func publishMessage(client *Client, stream proto.Broadcast_PublishReceiveClient)
 func connectedMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 	message := &proto.Publish{
 
-		ClientId: int64(client.id),
-		Content:  "joined Chitty-Chat",
+		ClientId:  int64(client.id),
+		Content:   "joined Chitty-Chat",
+		TimeStamp: int64(0),
 	}
 
 	//var message = serverConnection.PublishReceive(context).Publish
@@ -143,8 +151,9 @@ func connectedMessage(client *Client, stream proto.Broadcast_PublishReceiveClien
 func disconnectedMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 	message := &proto.Publish{
 
-		ClientId: int64(client.id),
-		Content:  "left Chitty-Chat",
+		ClientId:  int64(client.id),
+		Content:   "left Chitty-Chat",
+		TimeStamp: ClientTimeStamp,
 	}
 
 	//var message = serverConnection.PublishReceive(context).Publish

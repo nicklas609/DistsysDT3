@@ -20,7 +20,7 @@ service TimeAsk {
 message Publish {
     int64 clientId = 1;
     string content = 2;
-    //Lamport
+    int64 TimeStamp = 3;
 }
 
 message BroadcastMessage {

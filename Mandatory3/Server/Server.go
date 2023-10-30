@@ -20,6 +20,7 @@ type Server struct {
 	port                               int
 }
 
+var ServerTimestamp = int64(1)
 var streams = make([]proto.Broadcast_PublishReceiveServer, 0)
 
 // Used to get the user-defined port for the server from the command line
@@ -98,10 +99,21 @@ func (s *Server) PublishReceive(stream proto.Broadcast_PublishReceiveServer) err
 		}
 		if in != nil {
 
-			log.Print("Participant ", in.ClientId, " ", in.Content, " at Lamport time ") // timespam
+			if ServerTimestamp < in.TimeStamp {
+				ServerTimestamp = in.TimeStamp
+			}
+			if in.TimeStamp == 0 {
+				in.TimeStamp = ServerTimestamp
+			}
+
+			log.Print("Participant ", in.ClientId, " ", in.Content, " at Lamport time ", in.TimeStamp) // timespam
 
 		}
 		for _, s := range streams {
+
+			if in.TimeStamp == 0 {
+				in.TimeStamp = ServerTimestamp
+			}
 
 			s.Send(in)
 		}
