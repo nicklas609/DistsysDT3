@@ -2,6 +2,7 @@
 
 - Server: go run server/server.go -port 5454
 - Client: go run client/client.go -cPort 8081 -sPort 5454
+- To quit as a client type !quit
 
 Description:
 

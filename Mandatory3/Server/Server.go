@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 	"strconv"
 	"time"
 
@@ -44,8 +45,24 @@ func main() {
 
 	}
 }
+func setLog() *os.File {
+	// Clears the log.txt file when a new server is started
+	if err := os.Truncate("log.txt", 0); err != nil {
+		log.Printf("Failed to truncate: %v", err)
+	}
+
+	// This connects to the log file/changes the output of the log information to the log.txt file.
+	f, err := os.OpenFile("log.txt", os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	log.SetOutput(f)
+	return f
+}
 
 func startServer(server *Server) {
+
+	f := setLog()
 
 	// Create a new grpc server
 	grpcServer := grpc.NewServer()
@@ -64,6 +81,9 @@ func startServer(server *Server) {
 	if serveError != nil {
 		log.Fatalf("Could not serve listener")
 	}
+
+	defer f.Close()
+
 }
 
 func (c *Server) AskForTime(ctx context.Context, in *proto.AskForTimeMessage) (*proto.TimeMessage, error) {
@@ -93,10 +113,10 @@ func (s *Server) PublishReceive(stream proto.Broadcast_PublishReceiveServer) err
 				ServerTimestamp = in.TimeStamp
 			}
 			if in.TimeStamp == 0 {
-				in.TimeStamp = ServerTimestamp
+				in.TimeStamp = ServerTimestamp + 1
 			}
 
-			log.Print("Participant ", in.Clientname, " ", in.Content, " at Lamport time ", in.TimeStamp)
+			log.Print("ServersideLog : ", "Participant ", in.Clientname, " ", in.Content, " at Lamport time ", in.TimeStamp)
 		}
 
 		for _, s := range streams {

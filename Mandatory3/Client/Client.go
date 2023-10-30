@@ -19,6 +19,21 @@ type Client struct {
 	portNumber int
 }
 
+func setLog() *os.File {
+	// Clears the log.txt file when a new server is started
+	// if err := os.Truncate("log.txt", 0); err != nil {
+	// 	log.Printf("Failed to truncate: %v", err)
+	// }
+
+	// This connects to the log file/changes the output of the log information to the log.txt file.
+	f, err := os.OpenFile("log.txt", os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	log.SetOutput(f)
+	return f
+}
+
 var (
 	clientPort      = flag.Int("cPort", 0, "client port number")
 	serverPort      = flag.Int("sPort", 0, "server port number (should match the port used for the server)")
@@ -29,6 +44,8 @@ var connected = false
 
 func main() {
 	// Parse the flags to get the port for the client
+
+	f := setLog()
 	flag.Parse()
 	println("Enter username:")
 	scanner := bufio.NewScanner(os.Stdin)
@@ -61,6 +78,7 @@ func main() {
 
 	// Send I have left message to server
 	disconnectedMessage(client, stream)
+	defer f.Close()
 
 	time.Sleep(1 * time.Second)
 
@@ -107,7 +125,7 @@ func publishMessage(client *Client, stream proto.Broadcast_PublishReceiveClient)
 
 			ClientTimeStamp = in.TimeStamp
 		}
-		log.Print("Participant ", in.Clientname, " ", in.Content, " at Lamport time ", in.TimeStamp)
+		log.Print("ClientsideLog ", "From cliet: ", client.id, " : ", "Participant ", in.Clientname, " ", in.Content, " at Lamport time ", in.TimeStamp)
 	}
 
 }

@@ -1,0 +1,41 @@
+2023/10/30 15:14:35 Started server at port: 5454
+2023/10/30 15:14:47 Connected to the server at port 5454
+2023/10/30 15:14:47 ServersideLog : Participant Test1 joined Chitty-Chat at Lamport time 1
+2023/10/30 15:14:47 ClientsideLog From cliet: Test1 : Participant Test1 joined Chitty-Chat at Lamport time 1
+2023/10/30 15:14:59 Connected to the server at port 5454
+2023/10/30 15:14:59 ServersideLog : Participant Test2 joined Chitty-Chat at Lamport time 1
+2023/10/30 15:14:59 ClientsideLog From cliet: Test1 : Participant Test2 joined Chitty-Chat at Lamport time 1
+2023/10/30 15:14:59 ClientsideLog From cliet: Test2 : Participant Test2 joined Chitty-Chat at Lamport time 1
+2023/10/30 15:15:01 ServersideLog : Participant Test1 Hej med dig at Lamport time 2
+2023/10/30 15:15:01 ClientsideLog From cliet: Test1 : Participant Test1 Hej med dig at Lamport time 2
+2023/10/30 15:15:01 ClientsideLog From cliet: Test2 : Participant Test1 Hej med dig at Lamport time 2
+2023/10/30 15:15:05 ServersideLog : Participant Test2 Goddag at Lamport time 3
+2023/10/30 15:15:05 ClientsideLog From cliet: Test2 : Participant Test2 Goddag at Lamport time 3
+2023/10/30 15:15:05 ClientsideLog From cliet: Test1 : Participant Test2 Goddag at Lamport time 3
+2023/10/30 15:15:11 Connected to the server at port 5454
+2023/10/30 15:15:11 ServersideLog : Participant Test3 joined Chitty-Chat at Lamport time 3
+2023/10/30 15:15:11 ClientsideLog From cliet: Test2 : Participant Test3 joined Chitty-Chat at Lamport time 3
+2023/10/30 15:15:11 ClientsideLog From cliet: Test1 : Participant Test3 joined Chitty-Chat at Lamport time 3
+2023/10/30 15:15:11 ClientsideLog From cliet: Test3 : Participant Test3 joined Chitty-Chat at Lamport time 3
+2023/10/30 15:15:15 ServersideLog : Participant Test2 left Chitty-Chat at Lamport time 4
+2023/10/30 15:15:15 ClientsideLog From cliet: Test2 : Participant Test2 left Chitty-Chat at Lamport time 4
+2023/10/30 15:15:15 ClientsideLog From cliet: Test3 : Participant Test2 left Chitty-Chat at Lamport time 4
+2023/10/30 15:15:15 ClientsideLog From cliet: Test1 : Participant Test2 left Chitty-Chat at Lamport time 4
+2023/10/30 15:15:26 ServersideLog : Participant Test3 Hvad sker der her at Lamport time 5
+2023/10/30 15:15:26 ClientsideLog From cliet: Test1 : Participant Test3 Hvad sker der her at Lamport time 5
+2023/10/30 15:15:26 ClientsideLog From cliet: Test3 : Participant Test3 Hvad sker der her at Lamport time 5
+2023/10/30 15:15:30 ServersideLog : Participant Test1 left Chitty-Chat at Lamport time 6
+2023/10/30 15:15:30 ClientsideLog From cliet: Test1 : Participant Test1 left Chitty-Chat at Lamport time 6
+2023/10/30 15:15:30 ClientsideLog From cliet: Test3 : Participant Test1 left Chitty-Chat at Lamport time 6
+2023/10/30 15:15:40 Connected to the server at port 5454
+2023/10/30 15:15:40 ServersideLog : Participant Test1 joined Chitty-Chat at Lamport time 6
+2023/10/30 15:15:40 ClientsideLog From cliet: Test3 : Participant Test1 joined Chitty-Chat at Lamport time 6
+2023/10/30 15:15:40 ClientsideLog From cliet: Test1 : Participant Test1 joined Chitty-Chat at Lamport time 6
+2023/10/30 15:15:42 ServersideLog : Participant Test1 Hmm at Lamport time 7
+2023/10/30 15:15:42 ClientsideLog From cliet: Test3 : Participant Test1 Hmm at Lamport time 7
+2023/10/30 15:15:42 ClientsideLog From cliet: Test1 : Participant Test1 Hmm at Lamport time 7
+2023/10/30 15:15:46 ServersideLog : Participant Test3 left Chitty-Chat at Lamport time 8
+2023/10/30 15:15:46 ClientsideLog From cliet: Test1 : Participant Test3 left Chitty-Chat at Lamport time 8
+2023/10/30 15:15:46 ClientsideLog From cliet: Test3 : Participant Test3 left Chitty-Chat at Lamport time 8
+2023/10/30 15:15:49 ServersideLog : Participant Test1 left Chitty-Chat at Lamport time 9
+2023/10/30 15:15:49 ClientsideLog From cliet: Test1 : Participant Test1 left Chitty-Chat at Lamport time 9
