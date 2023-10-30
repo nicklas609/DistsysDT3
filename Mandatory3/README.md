@@ -1,3 +1,8 @@
+**_How to run program:_**
+
+- Server: go run server/server.go -port 5454
+- Client: go run client/client.go -cPort 8081 -sPort 5454
+
 Description:
 
 You have to implement Chitty-Chat a distributed system, that is providing a chatting service, and keeps track of logical time using Lamport Timestamps.
