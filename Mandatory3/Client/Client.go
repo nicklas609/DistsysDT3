@@ -92,20 +92,26 @@ func sendMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 
 		input := scanner.Text()
 		ClientTimeStamp++
+		if len(input) < 129 {
+			if input == "!quit" {
+				connected = false
+			} else {
+				message := &proto.Publish{
 
-		if input == "!quit" {
-			connected = false
+					Clientname: client.id,
+					Content:    input,
+					TimeStamp:  ClientTimeStamp,
+				}
+
+				if err := stream.Send(message); err != nil {
+					log.Fatalf("Failed to send a note: %v", err)
+				}
+			}
+
 		} else {
-			message := &proto.Publish{
 
-				Clientname: client.id,
-				Content:    input,
-				TimeStamp:  ClientTimeStamp,
-			}
+			log.Println("Message is too long, a message can not be longer then 128 characters")
 
-			if err := stream.Send(message); err != nil {
-				log.Fatalf("Failed to send a note: %v", err)
-			}
 		}
 
 	}
