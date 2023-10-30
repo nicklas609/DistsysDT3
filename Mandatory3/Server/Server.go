@@ -106,7 +106,7 @@ func (s *Server) PublishReceive(stream proto.Broadcast_PublishReceiveServer) err
 				in.TimeStamp = ServerTimestamp
 			}
 
-			log.Print("Participant ", in.ClientId, " ", in.Content, " at Lamport time ", in.TimeStamp) // timespam
+			log.Print("Participant ", in.Clientname, " ", in.Content, " at Lamport time ", in.TimeStamp) // timespam
 
 		}
 		for _, s := range streams {

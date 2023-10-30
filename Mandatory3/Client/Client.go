@@ -15,7 +15,7 @@ import (
 )
 
 type Client struct {
-	id         int
+	id         string
 	portNumber int
 }
 
@@ -30,10 +30,14 @@ var connected = false
 func main() {
 	// Parse the flags to get the port for the client
 	flag.Parse()
+	println("Enter username:")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	input := scanner.Text()
 
 	// Create a client
 	client := &Client{
-		id:         1,
+		id:         input,
 		portNumber: *clientPort,
 	}
 
@@ -88,9 +92,9 @@ func sendMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 		} else {
 			message := &proto.Publish{
 
-				ClientId:  int64(client.id),
-				Content:   input,
-				TimeStamp: ClientTimeStamp,
+				Clientname: client.id,
+				Content:    input,
+				TimeStamp:  ClientTimeStamp,
 			}
 
 			//var message = serverConnection.PublishReceive(context).Publish
@@ -128,7 +132,7 @@ func publishMessage(client *Client, stream proto.Broadcast_PublishReceiveClient)
 
 			ClientTimeStamp = in.TimeStamp
 		}
-		log.Print("Participant ", in.ClientId, " ", in.Content, " at Lamport time ", in.TimeStamp)
+		log.Print("Participant ", in.Clientname, " ", in.Content, " at Lamport time ", in.TimeStamp)
 	}
 
 }
@@ -136,9 +140,9 @@ func publishMessage(client *Client, stream proto.Broadcast_PublishReceiveClient)
 func connectedMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 	message := &proto.Publish{
 
-		ClientId:  int64(client.id),
-		Content:   "joined Chitty-Chat",
-		TimeStamp: int64(0),
+		Clientname: client.id,
+		Content:    "joined Chitty-Chat",
+		TimeStamp:  int64(0),
 	}
 
 	//var message = serverConnection.PublishReceive(context).Publish
@@ -151,9 +155,9 @@ func connectedMessage(client *Client, stream proto.Broadcast_PublishReceiveClien
 func disconnectedMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 	message := &proto.Publish{
 
-		ClientId:  int64(client.id),
-		Content:   "left Chitty-Chat",
-		TimeStamp: ClientTimeStamp,
+		Clientname: client.id,
+		Content:    "left Chitty-Chat",
+		TimeStamp:  ClientTimeStamp,
 	}
 
 	//var message = serverConnection.PublishReceive(context).Publish

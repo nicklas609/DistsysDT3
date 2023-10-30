@@ -18,7 +18,7 @@ service TimeAsk {
 }
 
 message Publish {
-    int64 clientId = 1;
+    string clientname = 1;
     string content = 2;
     int64 TimeStamp = 3;
 }
