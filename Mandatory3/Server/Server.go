@@ -74,16 +74,6 @@ func (c *Server) AskForTime(ctx context.Context, in *proto.AskForTimeMessage) (*
 	}, nil
 }
 
-// func (client *Server) PublishReceive(ctx context.Context, in *proto.Publish) (*proto.BroadcastMessage, error) {
-// 	log.Printf("Client with ID %d published a message\n", in.ClientId)
-// 	return &proto.BroadcastMessage{
-// 		Content:        in.Content,
-// 		ServerName:     client.name,
-// 		SenderClientId: in.ClientId,
-// 	}, nil
-
-// }
-
 func (s *Server) PublishReceive(stream proto.Broadcast_PublishReceiveServer) error {
 
 	streams = append(streams, stream)
@@ -106,9 +96,9 @@ func (s *Server) PublishReceive(stream proto.Broadcast_PublishReceiveServer) err
 				in.TimeStamp = ServerTimestamp
 			}
 
-			log.Print("Participant ", in.Clientname, " ", in.Content, " at Lamport time ", in.TimeStamp) // timespam
-
+			log.Print("Participant ", in.Clientname, " ", in.Content, " at Lamport time ", in.TimeStamp)
 		}
+
 		for _, s := range streams {
 
 			if in.TimeStamp == 0 {
@@ -117,6 +107,5 @@ func (s *Server) PublishReceive(stream proto.Broadcast_PublishReceiveServer) err
 
 			s.Send(in)
 		}
-		//stream.Send(in)
 	}
 }
