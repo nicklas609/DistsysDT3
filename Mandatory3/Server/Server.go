@@ -98,7 +98,7 @@ func (s *Server) PublishReceive(stream proto.Broadcast_PublishReceiveServer) err
 		}
 		if in != nil {
 
-			log.Print(in.Content)
+			log.Print("Participant ", in.ClientId, " ", in.Content, " at Lamport time ") // timespam
 
 		}
 		for _, s := range streams {

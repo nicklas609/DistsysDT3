@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	proto "github.com/nicklas609/DistsysDT3.git/tree/main/Mandatory3/proto"
 	"google.golang.org/grpc"
@@ -21,8 +22,10 @@ type Client struct {
 var (
 	clientPort = flag.Int("cPort", 0, "client port number")
 	serverPort = flag.Int("sPort", 0, "server port number (should match the port used for the server)")
-	waitc      = make(chan struct{})
+	waitc      = make(chan int)
 )
+
+var connected = false
 
 func main() {
 	// Parse the flags to get the port for the client
@@ -37,7 +40,12 @@ func main() {
 	// Wait for the client (user) to ask for the time
 	// go waitForTimeRequest(client)
 	serverConnection, _ := connectToServer()
+	connected = true
+
 	stream, err := serverConnection.PublishReceive(context.Background())
+
+	// Send I am connected message to server
+	connectedMessage(client, stream)
 
 	if err != nil {
 		print("what")
@@ -45,9 +53,15 @@ func main() {
 	go sendMessage(client, stream)
 	go publishMessage(client, stream)
 
-	for {
+	for connected {
 
 	}
+
+	// Send I have left message to server
+	disconnectedMessage(client, stream)
+
+	time.Sleep(1 * time.Second)
+
 }
 
 func sendMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
@@ -67,16 +81,21 @@ func sendMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
 		// 	Content:  input,
 		// })
 		input := scanner.Text()
-		message := &proto.Publish{
 
-			ClientId: int64(client.id),
-			Content:  input,
-		}
+		if input == "!quit" {
+			connected = false
+		} else {
+			message := &proto.Publish{
 
-		//var message = serverConnection.PublishReceive(context).Publish
+				ClientId: int64(client.id),
+				Content:  input,
+			}
 
-		if err := stream.Send(message); err != nil {
-			log.Fatalf("Failed to send a note: %v", err)
+			//var message = serverConnection.PublishReceive(context).Publish
+
+			if err := stream.Send(message); err != nil {
+				log.Fatalf("Failed to send a note: %v", err)
+			}
 		}
 
 	}
@@ -102,9 +121,39 @@ func publishMessage(client *Client, stream proto.Broadcast_PublishReceiveClient)
 		if err != nil {
 			log.Fatalf("Failed to receive a note : %v", err)
 		}
-		log.Printf(in.Content)
+		log.Print("Participant ", in.ClientId, " ", in.Content, " at Lamport time ")
 	}
 
+}
+
+func connectedMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
+	message := &proto.Publish{
+
+		ClientId: int64(client.id),
+		Content:  "joined Chitty-Chat",
+	}
+
+	//var message = serverConnection.PublishReceive(context).Publish
+
+	if err := stream.Send(message); err != nil {
+		log.Fatalf("Failed to send a note: %v", err)
+	}
+}
+
+func disconnectedMessage(client *Client, stream proto.Broadcast_PublishReceiveClient) {
+	message := &proto.Publish{
+
+		ClientId: int64(client.id),
+		Content:  "left Chitty-Chat",
+	}
+
+	//var message = serverConnection.PublishReceive(context).Publish
+
+	if err := stream.Send(message); err != nil {
+		log.Fatalf("Failed to send a note: %v", err)
+	}
+
+	// waitc <- 1
 }
 
 // func publishMessage(client *Client) {
