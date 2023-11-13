@@ -1,7 +1,7 @@
 **_How to run program:_**
 
 *Prerequisites*
-- Instal
+- Install Consul: https://github.com/hashicorp/consul
 
 *Getting Started*
 - Start Consul :
@@ -15,7 +15,5 @@
 - (Run Client x: go run Client/Client.go "Node x" :500x localhost:8500 )
 
 *Request to enter the critical section*
-- Type
-    $ critical
-- and hit enter 
+- Type ```critical``` and hit enter 
   
