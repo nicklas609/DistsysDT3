@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net"
@@ -31,7 +32,7 @@ type Client struct {
 }
 
 func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
-	return &proto.Reply{Message: "Request critical section from " + c.Name}, nil
+	return &proto.Reply{Message: "This is working " + c.Name}, nil
 }
 
 // Start listening/service.
@@ -93,10 +94,41 @@ func (c *Client) Start() {
 	// in our case, simply time out for 1 minute and greet all
 
 	// wait for other nodes to come up
+
+	go SendMessage(c)
+
 	for {
-		time.Sleep(20 * time.Second)
+		time.Sleep(1 * time.Second)
 		c.GreetAll()
+
+		// for key, element := range c.Clients {
+		// 	if key != "Why do I need to use key!!!!!" {
+		// 		r, _ := element.RequestCritical(context.Background(), &proto.Request{Name: "Hello"})
+		// 		log.Print(r.Message)
+		// 	}
+		// }
+
 	}
+}
+
+func SendMessage(c *Client) {
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for scanner.Scan() {
+
+		input := scanner.Text()
+
+		for key, element := range c.Clients {
+			if key != "Why do I need to use key!!!!!" {
+				r, t := element.RequestCritical(context.Background(), &proto.Request{Name: input})
+				log.Print(r.Message)
+				log.Print(t)
+			}
+		}
+
+	}
+
 }
 
 // Setup a new grpc client for contacting the server at addr.
@@ -107,7 +139,7 @@ func (n *Client) SetupClient(name string, addr string) {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	n.Clients[name] = proto.NewCriticalServiceClient(conn)
 
 	r, err := n.Clients[name].RequestCritical(context.Background(), &proto.Request{Name: n.Name})
