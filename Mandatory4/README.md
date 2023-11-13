@@ -16,5 +16,6 @@
 - (Run Client x: ```go run Client/Client.go "Node x" :500x localhost:8500``` )
 
 *Request to enter the critical section*
-- Type ```critical``` and hit enter 
+- Type ```critical``` into the console and hit enter
+- (The client will automatically exit the Critical Section after 10 seconds)
   
