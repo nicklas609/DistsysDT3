@@ -1,4 +1,4 @@
-**_How to run program:_**
+***How to run program:***
 
 *Prerequisites*
 - Install Consul:
