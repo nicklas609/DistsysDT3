@@ -6,7 +6,7 @@
 
 **Getting Started**
 - Start Consul :
-    consul agent -dev
+    ```consul agent -dev```
 - Run Client 1:
     ```go run Client/Client.go "Node 1" :5001 localhost:8500```
 - Run Client 2:
