@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/hashicorp/consul/api"
@@ -15,6 +17,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
+
+var mutex sync.Mutex
 
 type Client struct {
 	proto.UnimplementedCriticalServiceServer
@@ -28,11 +32,23 @@ type Client struct {
 	SDKV      api.KV
 
 	// used to make requests
-	Clients map[string]proto.CriticalServiceClient
+	Clients      map[string]proto.CriticalServiceClient
+	NodesReplies map[string]bool
+	InCritSys    bool
+	timeStamp    int
 }
 
 func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
-	return &proto.Reply{Message: "This is working " + c.Name}, nil
+	for {
+		if c.InCritSys == false {
+
+			break
+
+		}
+		//log.Printf("Wait")
+		time.Sleep(100 * time.Millisecond)
+	}
+	return &proto.Reply{Message: "Yes you may " + c.Name}, nil
 }
 
 // Start listening/service.
@@ -83,6 +99,9 @@ func (c *Client) registerService() {
 func (c *Client) Start() {
 	// init required variables
 	c.Clients = make(map[string]proto.CriticalServiceClient)
+	c.NodesReplies = make(map[string]bool)
+	c.InCritSys = false
+	c.timeStamp = 1
 
 	// start service / listening
 	go c.StartListening()
@@ -95,7 +114,8 @@ func (c *Client) Start() {
 
 	// wait for other nodes to come up
 
-	go SendMessage(c)
+	//go SendMessage(c)
+	go program(c)
 
 	for {
 		time.Sleep(1 * time.Second)
@@ -109,6 +129,71 @@ func (c *Client) Start() {
 		// }
 
 	}
+}
+
+func program(c *Client) {
+	var needAccess = false
+	var access = false
+	for {
+
+		time.Sleep(2 * time.Second)
+
+		if needAccess {
+			access = true
+			c.InCritSys = true
+
+			for key, element := range c.NodesReplies {
+				if key == "Why do I need this go" {
+					log.Printf("Who named there node this?")
+				}
+				if element == false {
+					access = false
+				}
+			}
+
+			if access == true {
+				//enter critical area
+
+				log.Printf("I am doing critical work")
+				time.Sleep(5 * time.Second)
+				needAccess = false
+
+				for key, element := range c.NodesReplies {
+					if element {
+						c.NodesReplies[key] = false
+					}
+
+				}
+				log.Printf("I done with my critical work")
+				c.InCritSys = false
+
+			}
+		}
+
+		if rand.Intn(5) < 2 && needAccess == false {
+			needAccess = true
+			for key, element := range c.Clients {
+				mutex.Lock()
+				go AskForAccess(c, key, element)
+				mutex.Unlock()
+
+			}
+
+		}
+	}
+
+}
+
+func AskForAccess(c *Client, key string, element proto.CriticalServiceClient) {
+	c.timeStamp++
+	log.Printf("ipjaf")
+	r, t := element.RequestCritical(context.Background(), &proto.Request{Name: "May I have access", timeStamp: c.timeStamp})
+	if r != nil && t != nil {
+		c.NodesReplies[key] = true
+		log.Print(r.Message)
+	}
+	log.Print(r.Message)
+	// log.Print(t)
 }
 
 func SendMessage(c *Client) {
@@ -141,6 +226,7 @@ func (n *Client) SetupClient(name string, addr string) {
 	}
 	//defer conn.Close()
 	n.Clients[name] = proto.NewCriticalServiceClient(conn)
+	n.NodesReplies[name] = false
 
 	r, err := n.Clients[name].RequestCritical(context.Background(), &proto.Request{Name: n.Name})
 	if err != nil {
@@ -156,7 +242,6 @@ func (c *Client) GreetAll() {
 	kvpairs, _, err := c.SDKV.List("Node", nil)
 	if err != nil {
 		log.Panicln(err)
-		return
 	}
 
 	// fmt.Println("Found nodes: ")
