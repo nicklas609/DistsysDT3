@@ -9,13 +9,15 @@ import (
 	"time"
 
 	"github.com/hashicorp/consul/api"
-	proto "github.com/nicklas609/DistsysDT3.git/tree/main/Mandatory4/proto"
+	proto "github.com/nicklas609/DistsysDT3/tree/main/Mandatory4/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
 type Client struct {
+	proto.UnimplementedCriticalServiceServer
+
 	// Self information
 	Name string
 	Addr string
@@ -28,7 +30,7 @@ type Client struct {
 	Clients map[string]proto.CriticalServiceClient
 }
 
-func (c *Client) Requedt(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
+func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
 	return &proto.Reply{Message: "Request critical section from " + c.Name}, nil
 }
 
