@@ -1,10 +1,10 @@
 ### How to run program: ###
 
-*Prerequisites*
+** Prerequisites **
 - Install Consul:
       https://github.com/hashicorp/consul
 
-*Getting Started*
+** Getting Started **
 - Start Consul :
     consul agent -dev
 - Run Client 1:
