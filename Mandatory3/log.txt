@@ -1,3 +1,30 @@
-2023/10/30 16:39:28 Connected to the server at port 5454
-2023/10/30 16:39:28 ClientsideLog From cliet: Marcus : Participant Marcus joined Chitty-Chat at Lamport time 2
-2023/10/30 16:39:32 ClientsideLog From cliet: Marcus : Participant Marcus Hey at Lamport time 3
+2023/10/30 17:02:51 Connected to the server at port 5454
+2023/10/30 17:02:51 ClientsideLog From cliet: Marcus : Participant Marcus joined Chitty-Chat at Lamport time 2
+2023/10/30 17:03:12 Connected to the server at port 5454
+2023/10/30 17:03:12 ClientsideLog From cliet: Nicklas : Participant Nicklas joined Chitty-Chat at Lamport time 2
+2023/10/30 17:03:12 ClientsideLog From cliet: Marcus : Participant Nicklas joined Chitty-Chat at Lamport time 2
+2023/10/30 17:03:30 Connected to the server at port 5454
+2023/10/30 17:03:30 ClientsideLog From cliet: Marcus : Participant Emil joined Chitty-Chat at Lamport time 2
+2023/10/30 17:03:30 ClientsideLog From cliet: Emil : Participant Emil joined Chitty-Chat at Lamport time 2
+2023/10/30 17:03:30 ClientsideLog From cliet: Nicklas : Participant Emil joined Chitty-Chat at Lamport time 2
+2023/10/30 17:04:05 ClientsideLog From cliet: Nicklas : Participant Nicklas Hey at Lamport time 3
+2023/10/30 17:04:05 ClientsideLog From cliet: Marcus : Participant Nicklas Hey at Lamport time 3
+2023/10/30 17:04:05 ClientsideLog From cliet: Emil : Participant Nicklas Hey at Lamport time 3
+2023/10/30 17:04:14 ClientsideLog From cliet: Marcus : Participant Marcus left Chitty-Chat at Lamport time 4
+2023/10/30 17:04:14 ClientsideLog From cliet: Nicklas : Participant Marcus left Chitty-Chat at Lamport time 4
+2023/10/30 17:04:14 ClientsideLog From cliet: Emil : Participant Marcus left Chitty-Chat at Lamport time 4
+2023/10/30 17:04:26 ClientsideLog From cliet: Nicklas : Participant Emil Hey Nicklas at Lamport time 5
+2023/10/30 17:04:26 ClientsideLog From cliet: Emil : Participant Emil Hey Nicklas at Lamport time 5
+2023/10/30 17:04:35 Connected to the server at port 5454
+2023/10/30 17:04:35 ClientsideLog From cliet: Nicklas : Participant Marcus joined Chitty-Chat at Lamport time 6
+2023/10/30 17:04:35 ClientsideLog From cliet: Emil : Participant Marcus joined Chitty-Chat at Lamport time 6
+2023/10/30 17:04:35 ClientsideLog From cliet: Marcus : Participant Marcus joined Chitty-Chat at Lamport time 6
+2023/10/30 17:04:41 ClientsideLog From cliet: Marcus : Participant Marcus I am back! at Lamport time 7
+2023/10/30 17:04:41 ClientsideLog From cliet: Nicklas : Participant Marcus I am back! at Lamport time 7
+2023/10/30 17:04:41 ClientsideLog From cliet: Emil : Participant Marcus I am back! at Lamport time 7
+2023/10/30 17:04:50 ClientsideLog From cliet: Nicklas : Participant Nicklas Bye! at Lamport time 8
+2023/10/30 17:04:50 ClientsideLog From cliet: Marcus : Participant Nicklas Bye! at Lamport time 8
+2023/10/30 17:04:50 ClientsideLog From cliet: Emil : Participant Nicklas Bye! at Lamport time 8
+2023/10/30 17:04:54 ClientsideLog From cliet: Marcus : Participant Nicklas left Chitty-Chat at Lamport time 9
+2023/10/30 17:04:54 ClientsideLog From cliet: Nicklas : Participant Nicklas left Chitty-Chat at Lamport time 9
+2023/10/30 17:04:54 ClientsideLog From cliet: Emil : Participant Nicklas left Chitty-Chat at Lamport time 9
