@@ -1,0 +1,251 @@
+2023/11/14 15:17:49 Successfully registered with Consul.
+2023/11/14 15:17:51 Successfully registered with Consul.
+2023/11/14 15:17:51 Greeting from the other node: Yes you may Node 1
+2023/11/14 15:17:52 Greeting from the other node: Yes you may Node 2
+2023/11/14 15:17:53 Successfully registered with Consul.
+2023/11/14 15:17:53 Greeting from the other node: Yes you may Node 3
+2023/11/14 15:17:53 Greeting from the other node: Yes you may Node 3
+2023/11/14 15:17:54 Greeting from the other node: Yes you may Node 1
+2023/11/14 15:17:54 Greeting from the other node: Yes you may Node 2
+2023/11/14 15:17:59 Yes you may Node 1
+2023/11/14 15:17:59 Yes you may Node 1
+2023/11/14 15:17:59 Yes you may Node 2
+2023/11/14 15:17:59 Yes you may Node 2
+2023/11/14 15:17:59 Yes you may Node 3
+2023/11/14 15:17:59 Yes you may Node 3
+2023/11/14 15:17:59 Yes you may Node 1
+2023/11/14 15:17:59 Yes you may Node 1
+2023/11/14 15:18:01 Node 3 : I am doing critical work
+2023/11/14 15:18:01 Yes you may Node 2
+2023/11/14 15:18:01 Yes you may Node 2
+2023/11/14 15:18:01 Node 2 : I am doing critical work
+2023/11/14 15:18:04 Node 3 : I done with my critical work
+2023/11/14 15:18:04 Yes you may Node 3
+2023/11/14 15:18:04 Yes you may Node 3
+2023/11/14 15:18:04 Node 2 : I done with my critical work
+2023/11/14 15:18:05 Node 1 : I am doing critical work
+2023/11/14 15:18:05 Node 1 : I done with my critical work
+2023/11/14 15:18:11 Yes you may Node 3
+2023/11/14 15:18:11 Yes you may Node 3
+2023/11/14 15:18:11 Yes you may Node 2
+2023/11/14 15:18:11 Yes you may Node 2
+2023/11/14 15:18:13 Node 1 : I am doing critical work
+2023/11/14 15:18:14 Node 1 : I done with my critical work
+2023/11/14 15:18:16 Yes you may Node 3
+2023/11/14 15:18:16 Yes you may Node 3
+2023/11/14 15:18:16 Yes you may Node 1
+2023/11/14 15:18:16 Yes you may Node 1
+2023/11/14 15:18:19 Node 2 : I am doing critical work
+2023/11/14 15:18:20 Node 2 : I done with my critical work
+2023/11/14 15:18:20 Yes you may Node 3
+2023/11/14 15:18:20 Yes you may Node 3
+2023/11/14 15:18:20 Yes you may Node 1
+2023/11/14 15:18:20 Yes you may Node 1
+2023/11/14 15:18:20 Yes you may Node 2
+2023/11/14 15:18:20 Yes you may Node 2
+2023/11/14 15:18:20 Yes you may Node 1
+2023/11/14 15:18:20 Yes you may Node 1
+2023/11/14 15:18:22 Node 2 : I am doing critical work
+2023/11/14 15:18:22 Node 3 : I am doing critical work
+2023/11/14 15:18:25 Node 2 : I done with my critical work
+2023/11/14 15:18:25 Yes you may Node 1
+2023/11/14 15:18:25 Yes you may Node 1
+2023/11/14 15:18:25 Node 3 : I done with my critical work
+2023/11/14 15:18:26 Yes you may Node 3
+2023/11/14 15:18:26 Yes you may Node 3
+2023/11/14 15:18:27 Node 2 : I am doing critical work
+2023/11/14 15:18:29 Node 2 : I done with my critical work
+2023/11/14 15:18:37 Yes you may Node 1
+2023/11/14 15:18:37 Yes you may Node 1
+2023/11/14 15:18:37 Yes you may Node 3
+2023/11/14 15:18:37 Yes you may Node 3
+2023/11/14 15:18:37 Yes you may Node 1
+2023/11/14 15:18:37 Yes you may Node 1
+2023/11/14 15:18:37 Yes you may Node 2
+2023/11/14 15:18:37 Yes you may Node 2
+2023/11/14 15:18:39 Yes you may Node 2
+2023/11/14 15:18:39 Yes you may Node 2
+2023/11/14 15:18:39 Yes you may Node 3
+2023/11/14 15:18:39 Yes you may Node 3
+2023/11/14 15:18:39 Node 2 : I am doing critical work
+2023/11/14 15:18:39 Node 3 : I am doing critical work
+2023/11/14 15:18:40 Node 3 : I done with my critical work
+2023/11/14 15:18:41 Node 1 : I am doing critical work
+2023/11/14 15:18:41 Node 2 : I done with my critical work
+2023/11/14 15:18:44 Node 1 : I done with my critical work
+2023/11/14 15:18:47 Yes you may Node 1
+2023/11/14 15:18:47 Yes you may Node 1
+2023/11/14 15:18:47 Yes you may Node 3
+2023/11/14 15:18:47 Yes you may Node 3
+2023/11/14 15:18:48 Yes you may Node 3
+2023/11/14 15:18:48 Yes you may Node 3
+2023/11/14 15:18:48 Yes you may Node 2
+2023/11/14 15:18:48 Yes you may Node 2
+2023/11/14 15:18:49 Node 2 : I am doing critical work
+2023/11/14 15:18:50 Node 1 : I am doing critical work
+2023/11/14 15:18:50 Node 2 : I done with my critical work
+2023/11/14 15:18:52 Yes you may Node 3
+2023/11/14 15:18:52 Yes you may Node 3
+2023/11/14 15:18:54 Node 1 : I done with my critical work
+2023/11/14 15:18:54 Yes you may Node 1
+2023/11/14 15:18:54 Yes you may Node 1
+2023/11/14 15:18:54 Node 2 : I am doing critical work
+2023/11/14 15:18:58 Node 2 : I done with my critical work
+2023/11/14 15:19:02 Yes you may Node 2
+2023/11/14 15:19:02 Yes you may Node 2
+2023/11/14 15:19:02 Yes you may Node 3
+2023/11/14 15:19:02 Yes you may Node 3
+2023/11/14 15:19:02 Yes you may Node 1
+2023/11/14 15:19:02 Yes you may Node 1
+2023/11/14 15:19:02 Yes you may Node 3
+2023/11/14 15:19:02 Yes you may Node 3
+2023/11/14 15:19:04 Node 1 : I am doing critical work
+2023/11/14 15:19:04 Node 2 : I am doing critical work
+2023/11/14 15:19:06 Node 2 : I done with my critical work
+2023/11/14 15:19:08 Node 1 : I done with my critical work
+2023/11/14 15:19:08 Yes you may Node 3
+2023/11/14 15:19:08 Yes you may Node 3
+2023/11/14 15:19:08 Yes you may Node 2
+2023/11/14 15:19:08 Yes you may Node 2
+2023/11/14 15:19:10 Node 1 : I am doing critical work
+2023/11/14 15:19:11 Node 1 : I done with my critical work
+2023/11/14 15:19:23 Yes you may Node 2
+2023/11/14 15:19:23 Yes you may Node 2
+2023/11/14 15:19:23 Yes you may Node 1
+2023/11/14 15:19:23 Yes you may Node 1
+2023/11/14 15:19:25 Node 3 : I am doing critical work
+2023/11/14 15:19:26 Node 3 : I done with my critical work
+2023/11/14 15:19:26 Yes you may Node 1
+2023/11/14 15:19:26 Yes you may Node 1
+2023/11/14 15:19:26 Yes you may Node 3
+2023/11/14 15:19:26 Yes you may Node 3
+2023/11/14 15:19:28 Node 2 : I am doing critical work
+2023/11/14 15:19:31 Node 2 : I done with my critical work
+2023/11/14 15:19:37 Yes you may Node 2
+2023/11/14 15:19:37 Yes you may Node 2
+2023/11/14 15:19:37 Yes you may Node 3
+2023/11/14 15:19:37 Yes you may Node 3
+2023/11/14 15:19:38 Yes you may Node 1
+2023/11/14 15:19:38 Yes you may Node 1
+2023/11/14 15:19:38 Yes you may Node 2
+2023/11/14 15:19:38 Yes you may Node 2
+2023/11/14 15:19:39 Node 1 : I am doing critical work
+2023/11/14 15:19:40 Node 3 : I am doing critical work
+2023/11/14 15:19:40 Node 1 : I done with my critical work
+2023/11/14 15:19:41 Yes you may Node 1
+2023/11/14 15:19:41 Yes you may Node 1
+2023/11/14 15:19:42 Node 3 : I done with my critical work
+2023/11/14 15:19:42 Yes you may Node 1
+2023/11/14 15:19:42 Yes you may Node 1
+2023/11/14 15:19:42 Yes you may Node 2
+2023/11/14 15:19:42 Yes you may Node 2
+2023/11/14 15:19:42 Yes you may Node 2
+2023/11/14 15:19:42 Yes you may Node 2
+2023/11/14 15:19:42 Yes you may Node 3
+2023/11/14 15:19:42 Yes you may Node 3
+2023/11/14 15:19:42 Yes you may Node 3
+2023/11/14 15:19:42 Yes you may Node 3
+2023/11/14 15:19:43 Node 2 : I am doing critical work
+2023/11/14 15:19:44 Node 3 : I am doing critical work
+2023/11/14 15:19:44 Node 1 : I am doing critical work
+2023/11/14 15:19:46 Node 2 : I done with my critical work
+2023/11/14 15:19:48 Node 3 : I done with my critical work
+2023/11/14 15:19:48 Node 1 : I done with my critical work
+2023/11/14 15:19:50 Yes you may Node 3
+2023/11/14 15:19:50 Yes you may Node 3
+2023/11/14 15:19:50 Yes you may Node 2
+2023/11/14 15:19:50 Yes you may Node 2
+2023/11/14 15:19:52 Node 1 : I am doing critical work
+2023/11/14 15:19:52 Node 1 : I done with my critical work
+2023/11/14 15:19:54 Yes you may Node 2
+2023/11/14 15:19:54 Yes you may Node 2
+2023/11/14 15:19:54 Yes you may Node 3
+2023/11/14 15:19:54 Yes you may Node 3
+2023/11/14 15:19:56 Node 1 : I am doing critical work
+2023/11/14 15:20:00 Node 1 : I done with my critical work
+2023/11/14 15:20:04 Yes you may Node 1
+2023/11/14 15:20:04 Yes you may Node 1
+2023/11/14 15:20:04 Yes you may Node 2
+2023/11/14 15:20:04 Yes you may Node 2
+2023/11/14 15:20:04 Yes you may Node 1
+2023/11/14 15:20:04 Yes you may Node 1
+2023/11/14 15:20:04 Yes you may Node 3
+2023/11/14 15:20:04 Yes you may Node 3
+2023/11/14 15:20:06 Node 3 : I am doing critical work
+2023/11/14 15:20:06 Node 2 : I am doing critical work
+2023/11/14 15:20:06 Node 2 : I done with my critical work
+2023/11/14 15:20:08 Node 3 : I done with my critical work
+2023/11/14 15:20:08 Yes you may Node 3
+2023/11/14 15:20:08 Yes you may Node 3
+2023/11/14 15:20:08 Yes you may Node 1
+2023/11/14 15:20:08 Yes you may Node 1
+2023/11/14 15:20:10 Node 2 : I am doing critical work
+2023/11/14 15:20:12 Yes you may Node 1
+2023/11/14 15:20:12 Yes you may Node 1
+2023/11/14 15:20:13 Node 2 : I done with my critical work
+2023/11/14 15:20:13 Yes you may Node 2
+2023/11/14 15:20:13 Yes you may Node 2
+2023/11/14 15:20:14 Node 3 : I am doing critical work
+2023/11/14 15:20:18 Node 3 : I done with my critical work
+2023/11/14 15:20:18 Yes you may Node 1
+2023/11/14 15:20:18 Yes you may Node 1
+2023/11/14 15:20:18 Yes you may Node 2
+2023/11/14 15:20:18 Yes you may Node 2
+2023/11/14 15:20:18 Yes you may Node 3
+2023/11/14 15:20:18 Yes you may Node 3
+2023/11/14 15:20:18 Yes you may Node 2
+2023/11/14 15:20:18 Yes you may Node 2
+2023/11/14 15:20:20 Node 3 : I am doing critical work
+2023/11/14 15:20:20 Node 3 : I done with my critical work
+2023/11/14 15:20:20 Node 1 : I am doing critical work
+2023/11/14 15:20:23 Node 1 : I done with my critical work
+2023/11/14 15:20:25 Yes you may Node 2
+2023/11/14 15:20:25 Yes you may Node 2
+2023/11/14 15:20:25 Yes you may Node 3
+2023/11/14 15:20:25 Yes you may Node 3
+2023/11/14 15:20:27 Node 1 : I am doing critical work
+2023/11/14 15:20:27 Node 1 : I done with my critical work
+2023/11/14 15:20:27 Yes you may Node 3
+2023/11/14 15:20:27 Yes you may Node 3
+2023/11/14 15:20:27 Yes you may Node 1
+2023/11/14 15:20:27 Yes you may Node 1
+2023/11/14 15:20:29 Yes you may Node 2
+2023/11/14 15:20:29 Yes you may Node 2
+2023/11/14 15:20:29 Yes you may Node 3
+2023/11/14 15:20:29 Yes you may Node 3
+2023/11/14 15:20:29 Node 2 : I am doing critical work
+2023/11/14 15:20:31 Node 1 : I am doing critical work
+2023/11/14 15:20:32 Node 1 : I done with my critical work
+2023/11/14 15:20:32 Node 2 : I done with my critical work
+2023/11/14 15:20:32 Yes you may Node 1
+2023/11/14 15:20:32 Yes you may Node 1
+2023/11/14 15:20:32 Yes you may Node 2
+2023/11/14 15:20:32 Yes you may Node 2
+2023/11/14 15:20:34 Node 3 : I am doing critical work
+2023/11/14 15:20:34 Yes you may Node 2
+2023/11/14 15:20:34 Yes you may Node 2
+2023/11/14 15:20:38 Node 3 : I done with my critical work
+2023/11/14 15:20:38 Yes you may Node 3
+2023/11/14 15:20:38 Yes you may Node 3
+2023/11/14 15:20:38 Yes you may Node 3
+2023/11/14 15:20:38 Yes you may Node 3
+2023/11/14 15:20:40 Node 1 : I am doing critical work
+2023/11/14 15:20:43 Node 1 : I done with my critical work
+2023/11/14 15:20:43 Yes you may Node 1
+2023/11/14 15:20:43 Yes you may Node 1
+2023/11/14 15:20:44 Node 2 : I am doing critical work
+2023/11/14 15:20:46 Yes you may Node 1
+2023/11/14 15:20:46 Yes you may Node 1
+2023/11/14 15:20:47 Node 2 : I done with my critical work
+2023/11/14 15:20:47 Yes you may Node 2
+2023/11/14 15:20:47 Yes you may Node 2
+2023/11/14 15:20:48 Node 3 : I am doing critical work
+2023/11/14 15:20:48 Node 3 : I done with my critical work
+2023/11/14 15:20:48 Yes you may Node 2
+2023/11/14 15:20:48 Yes you may Node 2
+2023/11/14 15:20:48 Yes you may Node 1
+2023/11/14 15:20:48 Yes you may Node 1
+2023/11/14 15:20:50 Node 3 : I am doing critical work
+2023/11/14 15:20:51 Node 3 : I done with my critical work
+2023/11/14 15:20:53 Yes you may Node 3
+2023/11/14 15:20:53 Yes you may Node 3

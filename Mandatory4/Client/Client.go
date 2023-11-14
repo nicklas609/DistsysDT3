@@ -34,6 +34,8 @@ func setLog() *os.File {
 }
 
 var mutex sync.Mutex
+var needAccess = false
+var access = false
 
 type Client struct {
 	proto.UnimplementedCriticalServiceServer
@@ -55,15 +57,24 @@ type Client struct {
 
 func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
 	for {
-		if c.InCritSys == false {
+		if c.InCritSys == false || in.timeStamp < c.timeStamp {
+
+			if in.timeStamp < c.timeStamp {
+				access = false
+				for key, element := range c.NodesReplies {
+					if element {
+						c.NodesReplies[key] = false
+					}
+
+				}
+			}
 
 			break
 
 		}
-		//log.Printf("Wait")
 		time.Sleep(100 * time.Millisecond)
 	}
-	return &proto.Reply{Message: "Yes you may " + c.Name}, nil
+	return &proto.Reply{Message: "Yes you may " + c.Name, timeStamp: c.timeStamp}, nil
 }
 
 // Start listening/service.
@@ -117,6 +128,7 @@ func (c *Client) Start() {
 	c.NodesReplies = make(map[string]bool)
 	c.InCritSys = false
 	c.timeStamp = 1
+	//f := setLog()
 
 	// start service / listening
 	go c.StartListening()
@@ -144,11 +156,11 @@ func (c *Client) Start() {
 		// }
 
 	}
+	//defer f.Close()
 }
 
 func program(c *Client) {
-	var needAccess = false
-	var access = false
+
 	for {
 
 		time.Sleep(2 * time.Second)
@@ -169,8 +181,8 @@ func program(c *Client) {
 			if access == true {
 				//enter critical area
 
-				log.Printf("I am doing critical work")
-				time.Sleep(5 * time.Second)
+				log.Print(c.Name + " : " + "I am doing critical work")
+				time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 				needAccess = false
 
 				for key, element := range c.NodesReplies {
@@ -179,29 +191,30 @@ func program(c *Client) {
 					}
 
 				}
-				log.Printf("I done with my critical work")
+				log.Print(c.Name + " : " + "I done with my critical work")
 				c.InCritSys = false
 
+			} else {
+				for key, element := range c.Clients {
+					mutex.Lock()
+					go AskForAccess(c, key, element)
+					mutex.Unlock()
+
+				}
 			}
 		}
 
-		if rand.Intn(5) < 2 && needAccess == false {
+		if rand.Intn(10) < 2 && needAccess == false {
 			needAccess = true
-			for key, element := range c.Clients {
-				mutex.Lock()
-				go AskForAccess(c, key, element)
-				mutex.Unlock()
-
-			}
-
 		}
+
 	}
 
 }
 
 func AskForAccess(c *Client, key string, element proto.CriticalServiceClient) {
 	c.timeStamp++
-	log.Printf("ipjaf")
+	c.InCritSys = true
 	r, t := element.RequestCritical(context.Background(), &proto.Request{Name: "May I have access"})
 	if r != nil && t == nil {
 		c.NodesReplies[key] = true
