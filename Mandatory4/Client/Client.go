@@ -53,7 +53,7 @@ type Client struct {
 	Clients      map[string]proto.CriticalServiceClient
 	NodesReplies map[string]bool
 	InCritSys    bool
-	timeStamp    int
+	timeStamp    int64
 }
 
 func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
@@ -62,12 +62,7 @@ func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto
 
 			if in.TimeStamp < c.timeStamp {
 				access = false
-				for key, element := range c.NodesReplies {
-					if element {
-						c.NodesReplies[key] = false
-					}
 
-				}
 			}
 
 			break
@@ -129,7 +124,7 @@ func (c *Client) Start() {
 	c.NodesReplies = make(map[string]bool)
 	c.InCritSys = false
 	c.timeStamp = 1
-	//f := setLog()
+	f := setLog()
 
 	// start service / listening
 	go c.StartListening()
@@ -157,7 +152,7 @@ func (c *Client) Start() {
 		// }
 
 	}
-	//defer f.Close()
+	defer f.Close()
 }
 
 func program(c *Client) {
@@ -179,10 +174,13 @@ func program(c *Client) {
 				}
 			}
 
+			time.Sleep(2 * time.Second)
+
 			if access == true {
 				//enter critical area
 
 				log.Print(c.Name + " : " + "I am doing critical work")
+				c.timeStamp++
 				time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 				needAccess = false
 
@@ -197,15 +195,14 @@ func program(c *Client) {
 
 			} else {
 				for key, element := range c.Clients {
-					mutex.Lock()
 					go AskForAccess(c, key, element)
-					mutex.Unlock()
-
+					time.Sleep(2 * time.Second)
 				}
 			}
 		}
 
 		if rand.Intn(10) < 2 && needAccess == false {
+			c.timeStamp++
 			needAccess = true
 		}
 
@@ -214,14 +211,13 @@ func program(c *Client) {
 }
 
 func AskForAccess(c *Client, key string, element proto.CriticalServiceClient) {
-	c.timeStamp++
+
 	c.InCritSys = true
 	r, t := element.RequestCritical(context.Background(), &proto.Request{Name: "May I have access"})
 	if r != nil && t == nil {
 		c.NodesReplies[key] = true
-		log.Print(r.Message)
+		log.Print(c.Name + " : " + r.Message)
 	}
-	log.Print(r.Message)
 	// log.Print(t)
 }
 
@@ -256,12 +252,13 @@ func (n *Client) SetupClient(name string, addr string) {
 	//defer conn.Close()
 	n.Clients[name] = proto.NewCriticalServiceClient(conn)
 	n.NodesReplies[name] = false
+	n.timeStamp++
 
-	r, err := n.Clients[name].RequestCritical(context.Background(), &proto.Request{Name: n.Name})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	log.Printf("Greeting from the other node: %s", r.Message)
+	//r, err := n.Clients[name].RequestCritical(context.Background(), &proto.Request{Name: n.Name})
+	// if err != nil {
+	// 	log.Fatalf("could not greet: %v", err)
+	// }
+	//log.Printf("Greeting from the other node: %s", r.Message)
 
 }
 
