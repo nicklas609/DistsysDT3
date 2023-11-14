@@ -13,6 +13,7 @@ import (
 
 	"github.com/hashicorp/consul/api"
 	proto "github.com/nicklas609/DistsysDT3/tree/main/Mandatory4/proto"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -57,9 +58,9 @@ type Client struct {
 
 func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
 	for {
-		if c.InCritSys == false || in.timeStamp < c.timeStamp {
+		if c.InCritSys == false || in.TimeStamp < c.timeStamp {
 
-			if in.timeStamp < c.timeStamp {
+			if in.TimeStamp < c.timeStamp {
 				access = false
 				for key, element := range c.NodesReplies {
 					if element {
@@ -74,7 +75,7 @@ func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto
 		}
 		time.Sleep(100 * time.Millisecond)
 	}
-	return &proto.Reply{Message: "Yes you may " + c.Name, timeStamp: c.timeStamp}, nil
+	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp}, nil
 }
 
 // Start listening/service.
