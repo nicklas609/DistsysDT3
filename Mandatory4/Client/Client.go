@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/hashicorp/consul/api"
@@ -14,6 +17,25 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
+
+func setLog() *os.File {
+	// Clears the log.txt file when a new server is started
+	// if err := os.Truncate("log.txt", 0); err != nil {
+	// 	log.Printf("Failed to truncate: %v", err)
+	// }
+
+	// This connects to the log file/changes the output of the log information to the log.txt file.
+	f, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	log.SetOutput(f)
+	return f
+}
+
+var mutex sync.Mutex
+var needAccess = false
+var access = false
 
 type Client struct {
 	proto.UnimplementedCriticalServiceServer
@@ -27,11 +49,32 @@ type Client struct {
 	SDKV      api.KV
 
 	// used to make requests
-	Clients map[string]proto.CriticalServiceClient
+	Clients      map[string]proto.CriticalServiceClient
+	NodesReplies map[string]bool
+	InCritSys    bool
+	timeStamp    int
 }
 
 func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
-	return &proto.Reply{Message: "Request critical section from " + c.Name}, nil
+	for {
+		if c.InCritSys == false || in.timeStamp < c.timeStamp {
+
+			if in.timeStamp < c.timeStamp {
+				access = false
+				for key, element := range c.NodesReplies {
+					if element {
+						c.NodesReplies[key] = false
+					}
+
+				}
+			}
+
+			break
+
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	return &proto.Reply{Message: "Yes you may " + c.Name, timeStamp: c.timeStamp}, nil
 }
 
 // Start listening/service.
@@ -82,6 +125,10 @@ func (c *Client) registerService() {
 func (c *Client) Start() {
 	// init required variables
 	c.Clients = make(map[string]proto.CriticalServiceClient)
+	c.NodesReplies = make(map[string]bool)
+	c.InCritSys = false
+	c.timeStamp = 1
+	//f := setLog()
 
 	// start service / listening
 	go c.StartListening()
@@ -93,10 +140,108 @@ func (c *Client) Start() {
 	// in our case, simply time out for 1 minute and greet all
 
 	// wait for other nodes to come up
+
+	//go SendMessage(c)
+	go program(c)
+
 	for {
-		time.Sleep(20 * time.Second)
+		time.Sleep(1 * time.Second)
 		c.GreetAll()
+
+		// for key, element := range c.Clients {
+		// 	if key != "Why do I need to use key!!!!!" {
+		// 		r, _ := element.RequestCritical(context.Background(), &proto.Request{Name: "Hello"})
+		// 		log.Print(r.Message)
+		// 	}
+		// }
+
 	}
+	//defer f.Close()
+}
+
+func program(c *Client) {
+
+	for {
+
+		time.Sleep(2 * time.Second)
+
+		if needAccess {
+			access = true
+			c.InCritSys = true
+
+			for key, element := range c.NodesReplies {
+				if key == "Why do I need this go" {
+					log.Printf("Who named there node this?")
+				}
+				if element == false {
+					access = false
+				}
+			}
+
+			if access == true {
+				//enter critical area
+
+				log.Print(c.Name + " : " + "I am doing critical work")
+				time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+				needAccess = false
+
+				for key, element := range c.NodesReplies {
+					if element {
+						c.NodesReplies[key] = false
+					}
+
+				}
+				log.Print(c.Name + " : " + "I done with my critical work")
+				c.InCritSys = false
+
+			} else {
+				for key, element := range c.Clients {
+					mutex.Lock()
+					go AskForAccess(c, key, element)
+					mutex.Unlock()
+
+				}
+			}
+		}
+
+		if rand.Intn(10) < 2 && needAccess == false {
+			needAccess = true
+		}
+
+	}
+
+}
+
+func AskForAccess(c *Client, key string, element proto.CriticalServiceClient) {
+	c.timeStamp++
+	c.InCritSys = true
+	r, t := element.RequestCritical(context.Background(), &proto.Request{Name: "May I have access"})
+	if r != nil && t == nil {
+		c.NodesReplies[key] = true
+		log.Print(r.Message)
+	}
+	log.Print(r.Message)
+	// log.Print(t)
+}
+
+func SendMessage(c *Client) {
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for scanner.Scan() {
+
+		input := scanner.Text()
+
+		for key, element := range c.Clients {
+			if key != "Why do I need to use key!!!!!" {
+				r, t := element.RequestCritical(context.Background(), &proto.Request{Name: input})
+				log.Print(r.Message)
+				log.Print(t)
+			}
+		}
+
+	}
+
 }
 
 // Setup a new grpc client for contacting the server at addr.
@@ -107,8 +252,9 @@ func (n *Client) SetupClient(name string, addr string) {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	n.Clients[name] = proto.NewCriticalServiceClient(conn)
+	n.NodesReplies[name] = false
 
 	r, err := n.Clients[name].RequestCritical(context.Background(), &proto.Request{Name: n.Name})
 	if err != nil {
@@ -124,7 +270,6 @@ func (c *Client) GreetAll() {
 	kvpairs, _, err := c.SDKV.List("Node", nil)
 	if err != nil {
 		log.Panicln(err)
-		return
 	}
 
 	// fmt.Println("Found nodes: ")
