@@ -18,6 +18,21 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+func setLog() *os.File {
+	// Clears the log.txt file when a new server is started
+	// if err := os.Truncate("log.txt", 0); err != nil {
+	// 	log.Printf("Failed to truncate: %v", err)
+	// }
+
+	// This connects to the log file/changes the output of the log information to the log.txt file.
+	f, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	log.SetOutput(f)
+	return f
+}
+
 var mutex sync.Mutex
 
 type Client struct {
@@ -187,8 +202,8 @@ func program(c *Client) {
 func AskForAccess(c *Client, key string, element proto.CriticalServiceClient) {
 	c.timeStamp++
 	log.Printf("ipjaf")
-	r, t := element.RequestCritical(context.Background(), &proto.Request{Name: "May I have access", timeStamp: c.timeStamp})
-	if r != nil && t != nil {
+	r, t := element.RequestCritical(context.Background(), &proto.Request{Name: "May I have access"})
+	if r != nil && t == nil {
 		c.NodesReplies[key] = true
 		log.Print(r.Message)
 	}
