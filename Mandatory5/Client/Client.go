@@ -121,12 +121,11 @@ func (c *Client) Start() {
 	c.registerService()
 	c.GreetAll()
 
-	// start the main loop here
-	// in our case, simply time out for 1 minute and greet all
-
-	// wait for other nodes to come up
-
-	//go SendMessage(c)
+	if c.IamLeader == false {
+		if c.Leader == "" {
+			Findleader(c)
+		}
+	}
 
 	for {
 		time.Sleep(3 * time.Second)
@@ -216,21 +215,15 @@ func (c *Client) GreetAll() {
 		c.IamLeader = true
 	}
 
-	if c.IamLeader == false {
-		if c.Leader == "" {
-			Findleader(c)
-		}
-	}
-
 }
 
 func Findleader(c *Client) {
 
 	for key, element := range c.Clients {
 		if key != "Why do I need to use key!!!!!" {
-			r, t := element.AreYouTheLeader(context.Background(), &proto.Request{"Are you the leader"})
+			r, t := element.AreYouTheLeader(context.Background(), &proto.Request{Name: "Are you the leader"})
 
-			log.Print(r)
+			log.Print(r.Leader)
 
 			if r == nil {
 

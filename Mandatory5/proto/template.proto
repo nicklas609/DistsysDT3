@@ -5,6 +5,8 @@ package proto;
 
 service CriticalService {
     rpc AreYouTheLeader (Request) returns (Reply) {}
+    rpc MakeBid (bid) returns (ack) {}
+    rpc getResult (AskForResult) returns (result) {}
     
 }
 
@@ -12,6 +14,26 @@ message Request {
     string name = 1;
     //int64  timeStamp = 2;
     
+}
+
+
+message bid {
+    int64 amount = 1;
+    string bidder = 2;
+    
+}
+
+message ack {
+    string message = 1;
+}
+
+message result {
+    int64 result = 1; 
+    string winner = 2;
+}
+
+message AskForResult {
+    string res = 1;
 }
 
 message Reply {
