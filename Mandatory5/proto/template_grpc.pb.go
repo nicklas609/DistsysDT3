@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CriticalService_RequestCritical_FullMethodName = "/proto.CriticalService/RequestCritical"
+	CriticalService_AreYouTheLeader_FullMethodName = "/proto.CriticalService/AreYouTheLeader"
 )
 
 // CriticalServiceClient is the client API for CriticalService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CriticalServiceClient interface {
-	RequestCritical(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
+	AreYouTheLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
 }
 
 type criticalServiceClient struct {
@@ -37,9 +37,9 @@ func NewCriticalServiceClient(cc grpc.ClientConnInterface) CriticalServiceClient
 	return &criticalServiceClient{cc}
 }
 
-func (c *criticalServiceClient) RequestCritical(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+func (c *criticalServiceClient) AreYouTheLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
 	out := new(Reply)
-	err := c.cc.Invoke(ctx, CriticalService_RequestCritical_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, CriticalService_AreYouTheLeader_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *criticalServiceClient) RequestCritical(ctx context.Context, in *Request
 // All implementations must embed UnimplementedCriticalServiceServer
 // for forward compatibility
 type CriticalServiceServer interface {
-	RequestCritical(context.Context, *Request) (*Reply, error)
+	AreYouTheLeader(context.Context, *Request) (*Reply, error)
 	mustEmbedUnimplementedCriticalServiceServer()
 }
 
@@ -58,8 +58,8 @@ type CriticalServiceServer interface {
 type UnimplementedCriticalServiceServer struct {
 }
 
-func (UnimplementedCriticalServiceServer) RequestCritical(context.Context, *Request) (*Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RequestCritical not implemented")
+func (UnimplementedCriticalServiceServer) AreYouTheLeader(context.Context, *Request) (*Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AreYouTheLeader not implemented")
 }
 func (UnimplementedCriticalServiceServer) mustEmbedUnimplementedCriticalServiceServer() {}
 
@@ -74,20 +74,20 @@ func RegisterCriticalServiceServer(s grpc.ServiceRegistrar, srv CriticalServiceS
 	s.RegisterService(&CriticalService_ServiceDesc, srv)
 }
 
-func _CriticalService_RequestCritical_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CriticalService_AreYouTheLeader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CriticalServiceServer).RequestCritical(ctx, in)
+		return srv.(CriticalServiceServer).AreYouTheLeader(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CriticalService_RequestCritical_FullMethodName,
+		FullMethod: CriticalService_AreYouTheLeader_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CriticalServiceServer).RequestCritical(ctx, req.(*Request))
+		return srv.(CriticalServiceServer).AreYouTheLeader(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +100,8 @@ var CriticalService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CriticalServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "RequestCritical",
-			Handler:    _CriticalService_RequestCritical_Handler,
+			MethodName: "AreYouTheLeader",
+			Handler:    _CriticalService_AreYouTheLeader_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
