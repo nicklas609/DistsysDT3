@@ -10,7 +10,7 @@ service CriticalService {
 
 message Request {
     string name = 1;
-    int64  timeStamp = 2;
+    //int64  timeStamp = 2;
     
 }
 

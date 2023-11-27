@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"net"
@@ -56,7 +55,7 @@ type Client struct {
 
 func (c *Client) AreYouTheLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
 
-	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, leader: c.IamLeader}, nil
+	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, Leader: c.IamLeader}, nil
 }
 
 // Start listening/service.
@@ -144,25 +143,25 @@ func (c *Client) Start() {
 	//defer f.Close()
 }
 
-func SendMessage(c *Client) {
+// func SendMessage(c *Client) {
 
-	scanner := bufio.NewScanner(os.Stdin)
+// 	scanner := bufio.NewScanner(os.Stdin)
 
-	for scanner.Scan() {
+// 	for scanner.Scan() {
 
-		input := scanner.Text()
+// 		input := scanner.Text()
 
-		for key, element := range c.Clients {
-			if key != "Why do I need to use key!!!!!" {
-				r, t := element.RequestCritical(context.Background(), &proto.Request{Name: input})
-				log.Print(r.Message)
-				log.Print(t)
-			}
-		}
+// 		for key, element := range c.Clients {
+// 			if key != "Why do I need to use key!!!!!" {
+// 				r, t := element.RequestCritical(context.Background(), &proto.Request{Name: input})
+// 				log.Print(r.Message)
+// 				log.Print(t)
+// 			}
+// 		}
 
-	}
+// 	}
 
-}
+// }
 
 // Setup a new grpc client for contacting the server at addr.
 func (n *Client) SetupClient(name string, addr string) {
@@ -192,13 +191,10 @@ func (c *Client) GreetAll() {
 	if err != nil {
 		log.Panicln(err)
 	}
-
-	//You are the only node on the network
-	if kvpairs.len == 1 {
-		c.IamLeader = true
-	}
+	amount := 0
 
 	for _, kventry := range kvpairs {
+		amount++
 		if strings.Compare(kventry.Key, c.Name) == 0 {
 			// ourself
 			continue
@@ -215,6 +211,10 @@ func (c *Client) GreetAll() {
 			}
 		}
 	}
+	//You are the only node on the network
+	if amount == 1 {
+		c.IamLeader = true
+	}
 
 	if c.IamLeader == false {
 		if c.Leader == "" {
@@ -228,7 +228,9 @@ func Findleader(c *Client) {
 
 	for key, element := range c.Clients {
 		if key != "Why do I need to use key!!!!!" {
-			r, t, l := element.AreYouTheLeader(context.Background(), &proto.Request{"Are you the leader"})
+			r, t := element.AreYouTheLeader(context.Background(), &proto.Request{"Are you the leader"})
+
+			log.Print(r)
 
 			if r == nil {
 
@@ -237,11 +239,7 @@ func Findleader(c *Client) {
 
 			}
 
-			if l {
-				c.Leader = key
-			}
 		}
-
 	}
 }
 
