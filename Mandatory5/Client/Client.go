@@ -51,11 +51,50 @@ type Client struct {
 	viceLeader    string
 	IamLeader     bool
 	IamViceLeader bool
+	MaxBid        int64
+	CurrentBidde  string
 }
 
 func (c *Client) AreYouTheLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
 
 	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, Leader: c.IamLeader}, nil
+}
+
+func (c *Client) leaderWrite(ctx context.Context, in *proto.Request) (*proto.ack, error) {
+
+	c.MaxBid = in.Amount
+	c.CurrentBidde = in.Bidder
+
+	return &proto.ack{Message: "ack"}, nil
+}
+
+func (c *Client) MakeBid(ctx context.Context, in *proto.bid) (*proto.ack, error) {
+
+	if in.amount > c.MaxBid {
+
+		if c.IamLeader == true {
+			c.MaxBid = in.amount
+			c.CurrentBidde = in.bidder
+			writeToNodes(c)
+
+		} else {
+			c.Clients[c.Leader].MakeBid(context.Background(), &proto.bid{Amount: in.amount, Bidder: in.bidder})
+			// if ack == "ack" {
+
+			// }
+		}
+
+	}
+	return &proto.ack{Message: "ack"}, nil
+}
+
+func writeToNodes(c *Client) {
+	for key, element := range c.Clients {
+		if key != "Why do I need to use key!!!!!" {
+			element.leaderWrite(context.Background(), &proto.bid{Amount: c.MaxBid, Bidder: c.CurrentBidde})
+		}
+	}
+
 }
 
 // Start listening/service.
@@ -112,6 +151,8 @@ func (c *Client) Start() {
 	c.viceLeader = ""
 	c.IamLeader = false
 	c.IamViceLeader = false
+	c.MaxBid = 0
+	c.CurrentBidde = ""
 	//f := setLog()
 
 	// start service / listening

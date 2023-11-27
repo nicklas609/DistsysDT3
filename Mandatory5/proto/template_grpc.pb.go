@@ -22,6 +22,7 @@ const (
 	CriticalService_AreYouTheLeader_FullMethodName = "/proto.CriticalService/AreYouTheLeader"
 	CriticalService_MakeBid_FullMethodName         = "/proto.CriticalService/MakeBid"
 	CriticalService_GetResult_FullMethodName       = "/proto.CriticalService/getResult"
+	CriticalService_LeaderWrite_FullMethodName     = "/proto.CriticalService/leaderWrite"
 )
 
 // CriticalServiceClient is the client API for CriticalService service.
@@ -31,6 +32,7 @@ type CriticalServiceClient interface {
 	AreYouTheLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
 	MakeBid(ctx context.Context, in *Bid, opts ...grpc.CallOption) (*Ack, error)
 	GetResult(ctx context.Context, in *AskForResult, opts ...grpc.CallOption) (*Result, error)
+	LeaderWrite(ctx context.Context, in *Bid, opts ...grpc.CallOption) (*Ack, error)
 }
 
 type criticalServiceClient struct {
@@ -68,6 +70,15 @@ func (c *criticalServiceClient) GetResult(ctx context.Context, in *AskForResult,
 	return out, nil
 }
 
+func (c *criticalServiceClient) LeaderWrite(ctx context.Context, in *Bid, opts ...grpc.CallOption) (*Ack, error) {
+	out := new(Ack)
+	err := c.cc.Invoke(ctx, CriticalService_LeaderWrite_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CriticalServiceServer is the server API for CriticalService service.
 // All implementations must embed UnimplementedCriticalServiceServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type CriticalServiceServer interface {
 	AreYouTheLeader(context.Context, *Request) (*Reply, error)
 	MakeBid(context.Context, *Bid) (*Ack, error)
 	GetResult(context.Context, *AskForResult) (*Result, error)
+	LeaderWrite(context.Context, *Bid) (*Ack, error)
 	mustEmbedUnimplementedCriticalServiceServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedCriticalServiceServer) MakeBid(context.Context, *Bid) (*Ack, 
 }
 func (UnimplementedCriticalServiceServer) GetResult(context.Context, *AskForResult) (*Result, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetResult not implemented")
+}
+func (UnimplementedCriticalServiceServer) LeaderWrite(context.Context, *Bid) (*Ack, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LeaderWrite not implemented")
 }
 func (UnimplementedCriticalServiceServer) mustEmbedUnimplementedCriticalServiceServer() {}
 
@@ -158,6 +173,24 @@ func _CriticalService_GetResult_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CriticalService_LeaderWrite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Bid)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CriticalServiceServer).LeaderWrite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CriticalService_LeaderWrite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CriticalServiceServer).LeaderWrite(ctx, req.(*Bid))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CriticalService_ServiceDesc is the grpc.ServiceDesc for CriticalService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var CriticalService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getResult",
 			Handler:    _CriticalService_GetResult_Handler,
+		},
+		{
+			MethodName: "leaderWrite",
+			Handler:    _CriticalService_LeaderWrite_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
