@@ -49,9 +49,17 @@ type Client struct {
 	InCritSys     bool
 	timeStamp     int64
 	Leader        string
+	viceLeader    string
 	IamLeader     bool
 	IamViceLeader bool
 }
+
+
+func (c *Client) AreYouTheLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
+
+	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, leader: c.IamLeader}, nil
+}
+
 
 // Start listening/service.
 func (c *Client) StartListening() {
@@ -104,6 +112,7 @@ func (c *Client) Start() {
 	c.NodesReplies = make(map[string]bool)
 	c.timeStamp = 1
 	c.Leader = ""
+	c.viceLeader = ""
 	c.IamLeader = false
 	c.IamViceLeader = false
 	//f := setLog()
@@ -200,6 +209,12 @@ func (c *Client) GreetAll() {
 			fmt.Println("New member: ", kventry.Key)
 			// connection not established previously
 			c.SetupClient(kventry.Key, string(kventry.Value))
+
+			if c.IamLeader == true {
+				if c.viceLeader == "" {
+					c.viceLeader = kventry.Key
+				}
+			}
 		}
 	}
 
@@ -207,7 +222,6 @@ func (c *Client) GreetAll() {
 		if c.Leader == "" {
 			Findleader(c)
 		}
-
 	}
 
 }
@@ -216,7 +230,7 @@ func Findleader(c *Client) {
 
 	for key, element := range c.Clients {
 		if key != "Why do I need to use key!!!!!" {
-			r, t, l := element.RequestCritical(context.Background(), &proto.Request{"Are you the leader"})
+			r, t, l := element.AreYouTheLeader(context.Background(), &proto.Request{"Are you the leader"})
 
 			if r == nil {
 
@@ -230,7 +244,6 @@ func Findleader(c *Client) {
 			}
 		}
 
-	}
 }
 
 func main() {
