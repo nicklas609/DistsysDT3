@@ -54,12 +54,10 @@ type Client struct {
 	IamViceLeader bool
 }
 
-
 func (c *Client) AreYouTheLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
 
 	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, leader: c.IamLeader}, nil
 }
-
 
 // Start listening/service.
 func (c *Client) StartListening() {
@@ -244,6 +242,7 @@ func Findleader(c *Client) {
 			}
 		}
 
+	}
 }
 
 func main() {
