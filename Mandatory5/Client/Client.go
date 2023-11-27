@@ -4,11 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"math/rand"
 	"net"
 	"os"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/hashicorp/consul/api"
@@ -34,10 +32,6 @@ func setLog() *os.File {
 	return f
 }
 
-var mutex sync.Mutex
-var needAccess = false
-var access = false
-
 type Client struct {
 	proto.UnimplementedCriticalServiceServer
 
@@ -50,27 +44,13 @@ type Client struct {
 	SDKV      api.KV
 
 	// used to make requests
-	Clients      map[string]proto.CriticalServiceClient
-	NodesReplies map[string]bool
-	InCritSys    bool
-	timeStamp    int64
-}
-
-func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
-	for {
-		if c.InCritSys == false || in.TimeStamp < c.timeStamp {
-
-			if in.TimeStamp < c.timeStamp {
-				access = false
-
-			}
-
-			break
-
-		}
-		time.Sleep(100 * time.Millisecond)
-	}
-	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp}, nil
+	Clients       map[string]proto.CriticalServiceClient
+	NodesReplies  map[string]bool
+	InCritSys     bool
+	timeStamp     int64
+	Leader        string
+	IamLeader     bool
+	IamViceLeader bool
 }
 
 // Start listening/service.
@@ -122,15 +102,18 @@ func (c *Client) Start() {
 	// init required variables
 	c.Clients = make(map[string]proto.CriticalServiceClient)
 	c.NodesReplies = make(map[string]bool)
-	c.InCritSys = false
 	c.timeStamp = 1
-	f := setLog()
+	c.Leader = ""
+	c.IamLeader = false
+	c.IamViceLeader = false
+	//f := setLog()
 
 	// start service / listening
 	go c.StartListening()
 
 	// register with the service discovery unit
 	c.registerService()
+	c.GreetAll()
 
 	// start the main loop here
 	// in our case, simply time out for 1 minute and greet all
@@ -138,10 +121,9 @@ func (c *Client) Start() {
 	// wait for other nodes to come up
 
 	//go SendMessage(c)
-	go program(c)
 
 	for {
-		time.Sleep(1 * time.Second)
+		time.Sleep(3 * time.Second)
 		c.GreetAll()
 
 		// for key, element := range c.Clients {
@@ -152,73 +134,7 @@ func (c *Client) Start() {
 		// }
 
 	}
-	defer f.Close()
-}
-
-func program(c *Client) {
-
-	for {
-
-		time.Sleep(2 * time.Second)
-
-		if needAccess {
-			access = true
-			c.InCritSys = true
-
-			for key, element := range c.NodesReplies {
-				if key == "Why do I need this go" {
-					log.Printf("Who named there node this?")
-				}
-				if element == false {
-					access = false
-				}
-			}
-
-			time.Sleep(2 * time.Second)
-
-			if access == true {
-				//enter critical area
-
-				log.Print(c.Name + " : " + "I am doing critical work")
-				c.timeStamp++
-				time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
-				needAccess = false
-
-				for key, element := range c.NodesReplies {
-					if element {
-						c.NodesReplies[key] = false
-					}
-
-				}
-				log.Print(c.Name + " : " + "I done with my critical work")
-				c.InCritSys = false
-
-			} else {
-				for key, element := range c.Clients {
-					go AskForAccess(c, key, element)
-					time.Sleep(2 * time.Second)
-				}
-			}
-		}
-
-		if rand.Intn(10) < 2 && needAccess == false {
-			c.timeStamp++
-			needAccess = true
-		}
-
-	}
-
-}
-
-func AskForAccess(c *Client, key string, element proto.CriticalServiceClient) {
-
-	c.InCritSys = true
-	r, t := element.RequestCritical(context.Background(), &proto.Request{Name: "May I have access"})
-	if r != nil && t == nil {
-		c.NodesReplies[key] = true
-		log.Print(c.Name + " : " + r.Message)
-	}
-	// log.Print(t)
+	//defer f.Close()
 }
 
 func SendMessage(c *Client) {
@@ -264,13 +180,17 @@ func (n *Client) SetupClient(name string, addr string) {
 
 // Busy Work module, greet every new member you find
 func (c *Client) GreetAll() {
-	// get all nodes -- inefficient, but this is just an example
+	// get all nodes -- inefficient
 	kvpairs, _, err := c.SDKV.List("Node", nil)
 	if err != nil {
 		log.Panicln(err)
 	}
 
-	// fmt.Println("Found nodes: ")
+	//You are the only node on the network
+	if kvpairs.len == 1 {
+		c.IamLeader = true
+	}
+
 	for _, kventry := range kvpairs {
 		if strings.Compare(kventry.Key, c.Name) == 0 {
 			// ourself
@@ -281,6 +201,35 @@ func (c *Client) GreetAll() {
 			// connection not established previously
 			c.SetupClient(kventry.Key, string(kventry.Value))
 		}
+	}
+
+	if c.IamLeader == false {
+		if c.Leader == "" {
+			Findleader(c)
+		}
+
+	}
+
+}
+
+func Findleader(c *Client) {
+
+	for key, element := range c.Clients {
+		if key != "Why do I need to use key!!!!!" {
+			r, t, l := element.RequestCritical(context.Background(), &proto.Request{"Are you the leader"})
+
+			if r == nil {
+
+			}
+			if t == nil {
+
+			}
+
+			if l {
+				c.Leader = key
+			}
+		}
+
 	}
 }
 
