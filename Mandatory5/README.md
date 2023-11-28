@@ -18,3 +18,6 @@
 **How to Bid with a running user:** 
 - Step 1: insert ```2``` in the console to request a bid
 - Step 2: insert the amount of the bid to the console
+
+**How to fetch the result with a running user:**
+- Step 1: insert ```1```in the console to fetch result
