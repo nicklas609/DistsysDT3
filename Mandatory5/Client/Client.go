@@ -44,6 +44,7 @@ type Client struct {
 
 	// used to make requests
 	Clients       map[string]proto.CriticalServiceClient
+	Users         map[string]proto.CriticalServiceClient
 	NodesReplies  map[string]bool
 	InCritSys     bool
 	timeStamp     int64
@@ -53,6 +54,7 @@ type Client struct {
 	IamViceLeader bool
 	MaxBid        int64
 	CurrentBidde  string
+	bidove        bool
 }
 
 func (c *Client) AreYouTheLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
@@ -60,12 +62,20 @@ func (c *Client) AreYouTheLeader(ctx context.Context, in *proto.Request) (*proto
 	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, Leader: c.IamLeader}, nil
 }
 
-func (c *Client) leaderWrite(ctx context.Context, in *proto.Bid) (*proto.Ack, error) {
+func (c *Client) LeaderWrite(ctx context.Context, in *proto.Bid) (*proto.Ack, error) {
 
 	c.MaxBid = in.Amount
 	c.CurrentBidde = in.Bidder
 
 	return &proto.Ack{Message: "ack"}, nil
+}
+
+func (c *Client) GetResult(ctx context.Context, in *proto.AskForResult) (*proto.Result, error) {
+	return &proto.Result{Result: c.MaxBid, Winner: c.CurrentBidde, Over: c.bidove}, nil
+}
+
+func (c *Client) GetNodeType(ctx context.Context, in *proto.Ack) (*proto.NodeType, error) {
+	return &proto.Result{Type: true}, nil
 }
 
 func (c *Client) MakeBid(ctx context.Context, in *proto.Bid) (*proto.Ack, error) {
@@ -153,6 +163,7 @@ func (c *Client) Start() {
 	c.IamViceLeader = false
 	c.MaxBid = 0
 	c.CurrentBidde = ""
+	c.bidove = false
 	//f := setLog()
 
 	// start service / listening
@@ -212,7 +223,20 @@ func (n *Client) SetupClient(name string, addr string) {
 		log.Fatalf("did not connect: %v", err)
 	}
 	//defer conn.Close()
-	n.Clients[name] = proto.NewCriticalServiceClient(conn)
+
+	r, t := proto.NewCriticalServiceClient(conn).GetNodeType(context.Background(), &proto.Request{Message: "Whats your type"})
+
+	if t != nil {
+		log.Fatalf("Something is wrong here")
+	}
+
+	if r.Type {
+		n.Clients[name] = proto.NewCriticalServiceClient(conn)
+
+	} else {
+		n.Users[name] = proto.NewCriticalServiceClient(conn)
+	}
+
 	n.NodesReplies[name] = false
 	n.timeStamp++
 

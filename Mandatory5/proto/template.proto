@@ -8,7 +8,7 @@ service CriticalService {
     rpc MakeBid (bid) returns (ack) {}
     rpc getResult (AskForResult) returns (result) {}
     rpc leaderWrite (bid) returns (ack) {}
-    
+    rpc getnodeType (ack) returns (nodeType) {}
 }
 
 message Request {
@@ -17,6 +17,12 @@ message Request {
     
 }
 
+
+message nodeType {
+
+    bool type = 1;
+
+}
 
 message bid {
     int64 amount = 1;
@@ -31,6 +37,7 @@ message ack {
 message result {
     int64 result = 1; 
     string winner = 2;
+    bool over = 3;
 }
 
 message AskForResult {
