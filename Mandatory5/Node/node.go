@@ -2,19 +2,19 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"log"
 	"math/rand"
 	"net"
 	"os"
+	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/hashicorp/consul/api"
 	proto "github.com/nicklas609/DistsysDT3/tree/main/Mandatory5/proto"
 
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -34,10 +34,6 @@ func setLog() *os.File {
 	return f
 }
 
-var mutex sync.Mutex
-var needAccess = false
-var access = false
-
 type Client struct {
 	proto.UnimplementedCriticalServiceServer
 
@@ -51,26 +47,75 @@ type Client struct {
 
 	// used to make requests
 	Clients      map[string]proto.CriticalServiceClient
+	Users        map[string]proto.CriticalServiceClient
 	NodesReplies map[string]bool
 	InCritSys    bool
 	timeStamp    int64
+	Username     string
 }
 
-func (c *Client) RequestCritical(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
-	for {
-		if c.InCritSys == false || in.TimeStamp < c.timeStamp {
+func (c *Client) GetnodeType(ctx context.Context, in *proto.Ack) (*proto.NodeType, error) {
+	return &proto.NodeType{Type: false}, nil
+}
 
-			if in.TimeStamp < c.timeStamp {
-				access = false
+func getRes(c *Client) {
+
+	amount := 0
+	for key, element := range c.Clients {
+		amount++
+		if key == "nil" && element == nil {
+			log.Print("Go is weird and I don't have time to find a better way for this")
+		}
+	}
+
+	temp := 0
+	RequestNode := rand.Intn((amount) + 1)
+	if RequestNode == 0 {
+		RequestNode++
+	}
+	for key, element := range c.Clients {
+		temp++
+		if temp == RequestNode {
+
+			r, t := element.GetResult(context.Background(), &proto.AskForResult{Res: "What is the current result?"})
+			if t != nil || key == "nil" {
 
 			}
-
-			break
-
+			log.Print(r.Result)
 		}
-		time.Sleep(100 * time.Millisecond)
+
 	}
-	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp}, nil
+
+}
+
+func makeBid(c *Client, bid int64) {
+
+	amount := 0
+	for key, element := range c.Clients {
+		amount++
+		if key == "nil" && element == nil {
+			log.Print("Go is weird and I don't have time to find a better way for this")
+		}
+	}
+
+	temp := 0
+	RequestNode := rand.Intn((amount) + 1)
+	if RequestNode == 0 {
+		RequestNode++
+	}
+	for key, element := range c.Clients {
+		temp++
+		if temp == RequestNode {
+
+			r, t := element.MakeBid(context.Background(), &proto.Bid{Amount: bid, Bidder: c.Username})
+			if t != nil || key == "nil" {
+
+			}
+			log.Print(r.Message)
+		}
+
+	}
+
 }
 
 // Start listening/service.
@@ -121,10 +166,12 @@ func (c *Client) registerService() {
 func (c *Client) Start() {
 	// init required variables
 	c.Clients = make(map[string]proto.CriticalServiceClient)
+	c.Users = make(map[string]proto.CriticalServiceClient)
 	c.NodesReplies = make(map[string]bool)
 	c.InCritSys = false
 	c.timeStamp = 1
-	f := setLog()
+	c.Username = ""
+	//f := setLog()
 
 	// start service / listening
 	go c.StartListening()
@@ -132,16 +179,14 @@ func (c *Client) Start() {
 	// register with the service discovery unit
 	c.registerService()
 
-	// start the main loop here
-	// in our case, simply time out for 1 minute and greet all
+	c.GreetAll()
 
-	// wait for other nodes to come up
+	//log.Print("I am here too")
 
-	//go SendMessage(c)
-	go program(c)
+	go menu(c)
 
 	for {
-		time.Sleep(1 * time.Second)
+		time.Sleep(3 * time.Second)
 		c.GreetAll()
 
 		// for key, element := range c.Clients {
@@ -152,113 +197,69 @@ func (c *Client) Start() {
 		// }
 
 	}
-	defer f.Close()
+	//defer f.Close()
 }
 
-func program(c *Client) {
-
-	for {
-
-		time.Sleep(2 * time.Second)
-
-		if needAccess {
-			access = true
-			c.InCritSys = true
-
-			for key, element := range c.NodesReplies {
-				if key == "Why do I need this go" {
-					log.Printf("Who named there node this?")
-				}
-				if element == false {
-					access = false
-				}
-			}
-
-			time.Sleep(2 * time.Second)
-
-			if access == true {
-				//enter critical area
-
-				log.Print(c.Name + " : " + "I am doing critical work")
-				c.timeStamp++
-				time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
-				needAccess = false
-
-				for key, element := range c.NodesReplies {
-					if element {
-						c.NodesReplies[key] = false
-					}
-
-				}
-				log.Print(c.Name + " : " + "I done with my critical work")
-				c.InCritSys = false
-
-			} else {
-				for key, element := range c.Clients {
-					go AskForAccess(c, key, element)
-					time.Sleep(2 * time.Second)
-				}
-			}
-		}
-
-		if rand.Intn(10) < 2 && needAccess == false {
-			c.timeStamp++
-			needAccess = true
-		}
-
-	}
-
-}
-
-func AskForAccess(c *Client, key string, element proto.CriticalServiceClient) {
-
-	c.InCritSys = true
-	r, t := element.RequestCritical(context.Background(), &proto.Request{Name: "May I have access"})
-	if r != nil && t == nil {
-		c.NodesReplies[key] = true
-		log.Print(c.Name + " : " + r.Message)
-	}
-	// log.Print(t)
-}
-
-func SendMessage(c *Client) {
+func menu(c *Client) {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
+	log.Print("What is your name")
+	scanner.Scan()
+	name := scanner.Text()
+	c.Username = name
+
+	log.Printf("Type 1 to see current bid")
+	log.Printf("Type 2 to make a bid")
 	for scanner.Scan() {
 
 		input := scanner.Text()
 
-		for key, element := range c.Clients {
-			if key != "Why do I need to use key!!!!!" {
-				r, t := element.RequestCritical(context.Background(), &proto.Request{Name: input})
-				log.Print(r.Message)
-				log.Print(t)
+		if input == "1" {
+
+			getRes(c)
+
+		} else if input == "2" {
+			log.Print("How much do you want to bid?")
+			scanner.Scan()
+			bid := scanner.Text()
+			i, err := strconv.Atoi(bid)
+
+			if err != nil {
+				log.Print("Please input a number")
 			}
+
+			makeBid(c, int64(i))
 		}
 
 	}
-
 }
 
 // Setup a new grpc client for contacting the server at addr.
 func (n *Client) SetupClient(name string, addr string) {
 
 	// setup connection with other node
+	log.Print("What is going off2")
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	//defer conn.Close()
-	n.Clients[name] = proto.NewCriticalServiceClient(conn)
-	n.NodesReplies[name] = false
-	n.timeStamp++
 
-	//r, err := n.Clients[name].RequestCritical(context.Background(), &proto.Request{Name: n.Name})
-	// if err != nil {
-	// 	log.Fatalf("could not greet: %v", err)
-	// }
-	//log.Printf("Greeting from the other node: %s", r.Message)
+	//defer conn.Close()
+	r, t := proto.NewCriticalServiceClient(conn).GetnodeType(context.Background(), &proto.Ack{Message: "Whats your type"})
+
+	if t != nil {
+		log.Fatalf("Something is wrong here")
+	}
+
+	if r.Type {
+		n.Clients[name] = proto.NewCriticalServiceClient(conn)
+		n.NodesReplies[name] = false
+		n.timeStamp++
+	} else {
+
+		n.Users[name] = proto.NewCriticalServiceClient(conn)
+	}
 
 }
 
@@ -276,7 +277,7 @@ func (c *Client) GreetAll() {
 			// ourself
 			continue
 		}
-		if c.Clients[kventry.Key] == nil {
+		if c.Clients[kventry.Key] == nil && c.Users[kventry.Key] == nil {
 			fmt.Println("New member: ", kventry.Key)
 			// connection not established previously
 			c.SetupClient(kventry.Key, string(kventry.Value))

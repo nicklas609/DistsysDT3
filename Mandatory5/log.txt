@@ -1,0 +1,84 @@
+2023/11/28 18:22:49 Successfully registered with Consul.
+2023/11/28 18:23:52 Get "http://localhost:8500/v1/kv/Node?recurse=": dial tcp [::1]:8500: connectex: No connection could be made because the target machine actively refused it.
+2023/11/28 18:24:11 Successfully registered with Consul.
+2023/11/28 18:25:19 Successfully registered with Consul.
+2023/11/28 18:32:43 Successfully registered with Consul.
+2023/11/28 18:32:43 
+2023/11/28 18:33:51 Successfully registered with Consul.
+2023/11/28 18:33:51 I am here
+2023/11/28 18:33:51 I am here
+2023/11/28 18:33:51 
+2023/11/28 18:33:51 I am here too
+2023/11/28 18:34:25 Successfully registered with Consul.
+2023/11/28 18:34:25 I am here do
+2023/11/28 18:34:25 I am here
+2023/11/28 18:34:25 I am here
+2023/11/28 18:34:25 
+2023/11/28 18:34:25 I am here too
+2023/11/28 18:35:10 Successfully registered with Consul.
+2023/11/28 18:35:10 What is going off
+2023/11/28 18:35:11 What is going on
+2023/11/28 18:35:11 What is going oafs
+2023/11/28 18:35:11 What is going off
+2023/11/28 18:35:11 What is going on
+2023/11/28 18:35:11 What is going oafs
+2023/11/28 18:35:11 I am here do
+2023/11/28 18:35:11 I am here
+2023/11/28 18:35:11 I am here
+2023/11/28 18:35:11 
+2023/11/28 18:35:11 I am here too
+2023/11/28 18:35:53 Successfully registered with Consul.
+2023/11/28 18:35:53 What is going off
+2023/11/28 18:35:53 What is going on
+2023/11/28 18:35:53 What is going oafs
+2023/11/28 18:35:53 What is going off
+2023/11/28 18:35:53 What is going on
+2023/11/28 18:35:53 What is going oafs
+2023/11/28 18:35:53 I am here do
+2023/11/28 18:35:53 I am here
+2023/11/28 18:35:53 I am here
+2023/11/28 18:35:53 
+2023/11/28 18:35:53 I am here too
+2023/11/28 18:36:10 Successfully registered with Consul.
+2023/11/28 18:36:10 What is going off2
+2023/11/28 18:36:10 What is going off
+2023/11/28 18:36:10 What is going on
+2023/11/28 18:36:10 What is going oafs
+2023/11/28 18:36:10 What is going off2
+2023/11/28 18:36:10 What is going off
+2023/11/28 18:36:10 What is going on
+2023/11/28 18:36:10 What is going oafs
+2023/11/28 18:36:10 I am here do
+2023/11/28 18:36:10 I am here
+2023/11/28 18:36:10 I am here
+2023/11/28 18:36:10 
+2023/11/28 18:36:10 I am here too
+2023/11/28 18:36:19 Get "http://localhost:8500/v1/kv/Node?recurse=": dial tcp [::1]:8500: connectex: No connection could be made because the target machine actively refused it.
+2023/11/28 18:36:41 Successfully registered with Consul.
+2023/11/28 18:36:41 What is going off2
+2023/11/28 18:36:41 What is going off
+2023/11/28 18:36:41 What is going on
+2023/11/28 18:36:41 What is going oafs
+2023/11/28 18:36:41 What is going off2
+2023/11/28 18:36:41 What is going off
+2023/11/28 18:36:41 What is going on
+2023/11/28 18:36:41 What is going oafs
+2023/11/28 18:36:41 I am here do
+2023/11/28 18:36:41 I am here
+2023/11/28 18:36:41 I am here
+2023/11/28 18:36:41 
+2023/11/28 18:36:41 I am here too
+2023/11/28 18:37:45 Successfully registered with Consul.
+2023/11/28 18:37:45 What is going off2
+2023/11/28 18:37:45 What is going off
+2023/11/28 18:37:45 What is going on
+2023/11/28 18:37:45 What is going oafs
+2023/11/28 18:37:45 What is going off2
+2023/11/28 18:37:45 What is going off
+2023/11/28 18:37:45 What is going on
+2023/11/28 18:37:45 What is going oafs
+2023/11/28 18:37:45 I am here do
+2023/11/28 18:37:45 I am here
+2023/11/28 18:37:45 I am here
+2023/11/28 18:37:45 
+2023/11/28 18:37:45 I am here too

@@ -74,8 +74,8 @@ func (c *Client) GetResult(ctx context.Context, in *proto.AskForResult) (*proto.
 	return &proto.Result{Result: c.MaxBid, Winner: c.CurrentBidde, Over: c.bidove}, nil
 }
 
-func (c *Client) GetNodeType(ctx context.Context, in *proto.Ack) (*proto.NodeType, error) {
-	return &proto.Result{Type: true}, nil
+func (c *Client) GetnodeType(ctx context.Context, in *proto.Ack) (*proto.NodeType, error) {
+	return &proto.NodeType{Type: true}, nil
 }
 
 func (c *Client) MakeBid(ctx context.Context, in *proto.Bid) (*proto.Ack, error) {
@@ -155,6 +155,7 @@ func (c *Client) registerService() {
 func (c *Client) Start() {
 	// init required variables
 	c.Clients = make(map[string]proto.CriticalServiceClient)
+	c.Users = make(map[string]proto.CriticalServiceClient)
 	c.NodesReplies = make(map[string]bool)
 	c.timeStamp = 1
 	c.Leader = ""
@@ -224,7 +225,7 @@ func (n *Client) SetupClient(name string, addr string) {
 	}
 	//defer conn.Close()
 
-	r, t := proto.NewCriticalServiceClient(conn).GetNodeType(context.Background(), &proto.Request{Message: "Whats your type"})
+	r, t := proto.NewCriticalServiceClient(conn).GetnodeType(context.Background(), &proto.Ack{Message: "Whats your type"})
 
 	if t != nil {
 		log.Fatalf("Something is wrong here")
@@ -263,7 +264,7 @@ func (c *Client) GreetAll() {
 			// ourself
 			continue
 		}
-		if c.Clients[kventry.Key] == nil {
+		if c.Clients[kventry.Key] == nil && c.Users[kventry.Key] == nil {
 			fmt.Println("New member: ", kventry.Key)
 			// connection not established previously
 			c.SetupClient(kventry.Key, string(kventry.Value))
@@ -289,6 +290,10 @@ func Findleader(c *Client) {
 			r, t := element.AreYouTheLeader(context.Background(), &proto.Request{Name: "Are you the leader"})
 
 			log.Print(r.Leader)
+			if r.Leader {
+				c.Leader = key
+
+			}
 
 			if r == nil {
 
