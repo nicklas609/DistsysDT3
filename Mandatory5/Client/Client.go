@@ -67,10 +67,10 @@ func (c *Client) AreYouTheViceLeader(ctx context.Context, in *proto.Request) (*p
 	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, Leader: c.IamViceLeader}, nil
 }
 
-func (c *Client) YouTheViceLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
+func (c *Client) YouTheViceLeader(ctx context.Context, in *proto.Request) (*proto.Ack, error) {
 
 	c.IamViceLeader = true
-	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, Leader: c.IamViceLeader}, nil
+	return &proto.Ack{Message: "ack"}, nil
 
 }
 
@@ -345,7 +345,7 @@ func (c *Client) GreetAll() {
 			if c.IamLeader == true {
 				if c.viceLeader == "" {
 					c.viceLeader = kventry.Key
-					c.Clients[kventry.Key].YouTheViceLeader(context.Background(), &proto.Request{Message: "You are my vice leader"})
+					c.Clients[kventry.Key].YouTheViceLeader(context.Background(), &proto.Request{Name: "You are my vice leader"})
 				}
 			}
 		}
@@ -386,8 +386,8 @@ func ViceFindleader(c *Client) {
 		if key != "Why do I need to use key!!!!!" {
 			r, t := element.AreYouTheViceLeader(context.Background(), &proto.Request{Name: "Are you the leader"})
 
-			log.Print(r.viceLeader)
-			if r.viceLeader {
+			log.Print(r.Leader)
+			if r.Leader {
 				c.viceLeader = key
 
 			}
