@@ -70,6 +70,7 @@ func (c *Client) AreYouTheViceLeader(ctx context.Context, in *proto.Request) (*p
 func (c *Client) YouTheViceLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
 
 	c.IamViceLeader = true
+	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, Leader: c.IamViceLeader}, nil
 
 }
 
@@ -110,10 +111,10 @@ func (c *Client) MakeBid(ctx context.Context, in *proto.Bid) (*proto.Ack, error)
 			return &proto.Ack{Message: "ack"}, nil
 
 		} else {
-			b, c := c.Clients[c.Leader].MakeBid(context.Background(), &proto.Bid{Amount: in.Amount, Bidder: in.Bidder})
+			b, e := c.Clients[c.Leader].MakeBid(context.Background(), &proto.Bid{Amount: in.Amount, Bidder: in.Bidder})
 
-			if c != nil {
-				if c.IamViceLeader {
+			if e != nil {
+				if c.IamViceLeader == true {
 
 					c.IamLeader = true
 					c.Leader = ""
@@ -128,9 +129,9 @@ func (c *Client) MakeBid(ctx context.Context, in *proto.Bid) (*proto.Ack, error)
 				} else {
 
 					Findleader(c)
-					b, c := c.Clients[c.Leader].MakeBid(context.Background(), &proto.Bid{Amount: in.Amount, Bidder: in.Bidder})
+					b, e := c.Clients[c.Leader].MakeBid(context.Background(), &proto.Bid{Amount: in.Amount, Bidder: in.Bidder})
 
-					if c != nil {
+					if e != nil {
 						// This code could use a loop
 						c.Clients[c.viceLeader].CantFindLeader(context.Background(), &proto.NodeType{Type: true})
 						time.Sleep(3 * time.Second)
@@ -145,6 +146,7 @@ func (c *Client) MakeBid(ctx context.Context, in *proto.Bid) (*proto.Ack, error)
 						}
 
 					} else {
+						b = b
 						return &proto.Ack{Message: "ack"}, nil
 					}
 				}
