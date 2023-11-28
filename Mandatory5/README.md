@@ -16,5 +16,5 @@
 - (Run User x: ```go run Node/node.go "User x" :501x localhost:8500```)
 
 **How to Bid with a running user:** 
-Step 1: insert ```2``` in the console to request a bid
-Step 2: insert the amount of the bid to the console
+- Step 1: insert ```2``` in the console to request a bid
+- Step 2: insert the amount of the bid to the console
