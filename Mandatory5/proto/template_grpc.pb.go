@@ -19,11 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CriticalService_AreYouTheLeader_FullMethodName = "/proto.CriticalService/AreYouTheLeader"
-	CriticalService_MakeBid_FullMethodName         = "/proto.CriticalService/MakeBid"
-	CriticalService_GetResult_FullMethodName       = "/proto.CriticalService/getResult"
-	CriticalService_LeaderWrite_FullMethodName     = "/proto.CriticalService/leaderWrite"
-	CriticalService_GetnodeType_FullMethodName     = "/proto.CriticalService/getnodeType"
+	CriticalService_AreYouTheLeader_FullMethodName     = "/proto.CriticalService/AreYouTheLeader"
+	CriticalService_AreYouTheViceLeader_FullMethodName = "/proto.CriticalService/AreYouTheViceLeader"
+	CriticalService_YouTheViceLeader_FullMethodName    = "/proto.CriticalService/YouTheViceLeader"
+	CriticalService_MakeBid_FullMethodName             = "/proto.CriticalService/MakeBid"
+	CriticalService_GetResult_FullMethodName           = "/proto.CriticalService/getResult"
+	CriticalService_LeaderWrite_FullMethodName         = "/proto.CriticalService/leaderWrite"
+	CriticalService_GetnodeType_FullMethodName         = "/proto.CriticalService/getnodeType"
+	CriticalService_CantFindLeader_FullMethodName      = "/proto.CriticalService/cantFindLeader"
 )
 
 // CriticalServiceClient is the client API for CriticalService service.
@@ -31,10 +34,13 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CriticalServiceClient interface {
 	AreYouTheLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
+	AreYouTheViceLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
+	YouTheViceLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Ack, error)
 	MakeBid(ctx context.Context, in *Bid, opts ...grpc.CallOption) (*Ack, error)
 	GetResult(ctx context.Context, in *AskForResult, opts ...grpc.CallOption) (*Result, error)
 	LeaderWrite(ctx context.Context, in *Bid, opts ...grpc.CallOption) (*Ack, error)
 	GetnodeType(ctx context.Context, in *Ack, opts ...grpc.CallOption) (*NodeType, error)
+	CantFindLeader(ctx context.Context, in *NodeType, opts ...grpc.CallOption) (*Ack, error)
 }
 
 type criticalServiceClient struct {
@@ -48,6 +54,24 @@ func NewCriticalServiceClient(cc grpc.ClientConnInterface) CriticalServiceClient
 func (c *criticalServiceClient) AreYouTheLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
 	out := new(Reply)
 	err := c.cc.Invoke(ctx, CriticalService_AreYouTheLeader_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *criticalServiceClient) AreYouTheViceLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+	out := new(Reply)
+	err := c.cc.Invoke(ctx, CriticalService_AreYouTheViceLeader_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *criticalServiceClient) YouTheViceLeader(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Ack, error) {
+	out := new(Ack)
+	err := c.cc.Invoke(ctx, CriticalService_YouTheViceLeader_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,15 +114,27 @@ func (c *criticalServiceClient) GetnodeType(ctx context.Context, in *Ack, opts .
 	return out, nil
 }
 
+func (c *criticalServiceClient) CantFindLeader(ctx context.Context, in *NodeType, opts ...grpc.CallOption) (*Ack, error) {
+	out := new(Ack)
+	err := c.cc.Invoke(ctx, CriticalService_CantFindLeader_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CriticalServiceServer is the server API for CriticalService service.
 // All implementations must embed UnimplementedCriticalServiceServer
 // for forward compatibility
 type CriticalServiceServer interface {
 	AreYouTheLeader(context.Context, *Request) (*Reply, error)
+	AreYouTheViceLeader(context.Context, *Request) (*Reply, error)
+	YouTheViceLeader(context.Context, *Request) (*Ack, error)
 	MakeBid(context.Context, *Bid) (*Ack, error)
 	GetResult(context.Context, *AskForResult) (*Result, error)
 	LeaderWrite(context.Context, *Bid) (*Ack, error)
 	GetnodeType(context.Context, *Ack) (*NodeType, error)
+	CantFindLeader(context.Context, *NodeType) (*Ack, error)
 	mustEmbedUnimplementedCriticalServiceServer()
 }
 
@@ -108,6 +144,12 @@ type UnimplementedCriticalServiceServer struct {
 
 func (UnimplementedCriticalServiceServer) AreYouTheLeader(context.Context, *Request) (*Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AreYouTheLeader not implemented")
+}
+func (UnimplementedCriticalServiceServer) AreYouTheViceLeader(context.Context, *Request) (*Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AreYouTheViceLeader not implemented")
+}
+func (UnimplementedCriticalServiceServer) YouTheViceLeader(context.Context, *Request) (*Ack, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method YouTheViceLeader not implemented")
 }
 func (UnimplementedCriticalServiceServer) MakeBid(context.Context, *Bid) (*Ack, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MakeBid not implemented")
@@ -120,6 +162,9 @@ func (UnimplementedCriticalServiceServer) LeaderWrite(context.Context, *Bid) (*A
 }
 func (UnimplementedCriticalServiceServer) GetnodeType(context.Context, *Ack) (*NodeType, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetnodeType not implemented")
+}
+func (UnimplementedCriticalServiceServer) CantFindLeader(context.Context, *NodeType) (*Ack, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CantFindLeader not implemented")
 }
 func (UnimplementedCriticalServiceServer) mustEmbedUnimplementedCriticalServiceServer() {}
 
@@ -148,6 +193,42 @@ func _CriticalService_AreYouTheLeader_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CriticalServiceServer).AreYouTheLeader(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CriticalService_AreYouTheViceLeader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CriticalServiceServer).AreYouTheViceLeader(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CriticalService_AreYouTheViceLeader_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CriticalServiceServer).AreYouTheViceLeader(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CriticalService_YouTheViceLeader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CriticalServiceServer).YouTheViceLeader(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CriticalService_YouTheViceLeader_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CriticalServiceServer).YouTheViceLeader(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -224,6 +305,24 @@ func _CriticalService_GetnodeType_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CriticalService_CantFindLeader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NodeType)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CriticalServiceServer).CantFindLeader(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CriticalService_CantFindLeader_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CriticalServiceServer).CantFindLeader(ctx, req.(*NodeType))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CriticalService_ServiceDesc is the grpc.ServiceDesc for CriticalService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -234,6 +333,14 @@ var CriticalService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AreYouTheLeader",
 			Handler:    _CriticalService_AreYouTheLeader_Handler,
+		},
+		{
+			MethodName: "AreYouTheViceLeader",
+			Handler:    _CriticalService_AreYouTheViceLeader_Handler,
+		},
+		{
+			MethodName: "YouTheViceLeader",
+			Handler:    _CriticalService_YouTheViceLeader_Handler,
 		},
 		{
 			MethodName: "MakeBid",
@@ -250,6 +357,10 @@ var CriticalService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getnodeType",
 			Handler:    _CriticalService_GetnodeType_Handler,
+		},
+		{
+			MethodName: "cantFindLeader",
+			Handler:    _CriticalService_CantFindLeader_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

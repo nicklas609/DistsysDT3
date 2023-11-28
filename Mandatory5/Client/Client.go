@@ -62,6 +62,17 @@ func (c *Client) AreYouTheLeader(ctx context.Context, in *proto.Request) (*proto
 	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, Leader: c.IamLeader}, nil
 }
 
+func (c *Client) AreYouTheViceLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
+
+	return &proto.Reply{Message: "Yes you may " + c.Name, TimeStamp: c.timeStamp, Leader: c.IamViceLeader}, nil
+}
+
+func (c *Client) YouTheViceLeader(ctx context.Context, in *proto.Request) (*proto.Reply, error) {
+
+	c.IamViceLeader = true
+
+}
+
 func (c *Client) LeaderWrite(ctx context.Context, in *proto.Bid) (*proto.Ack, error) {
 
 	c.MaxBid = in.Amount
@@ -78,6 +89,16 @@ func (c *Client) GetnodeType(ctx context.Context, in *proto.Ack) (*proto.NodeTyp
 	return &proto.NodeType{Type: true}, nil
 }
 
+func (c *Client) CantFindLeader(ctx context.Context, in *proto.NodeType) (*proto.Ack, error) {
+
+	c.IamLeader = true
+	c.Leader = ""
+	c.IamViceLeader = false
+	c.viceLeader = ""
+	return &proto.Ack{Message: "ack"}, nil
+
+}
+
 func (c *Client) MakeBid(ctx context.Context, in *proto.Bid) (*proto.Ack, error) {
 
 	if in.Amount > c.MaxBid {
@@ -86,9 +107,53 @@ func (c *Client) MakeBid(ctx context.Context, in *proto.Bid) (*proto.Ack, error)
 			c.MaxBid = in.Amount
 			c.CurrentBidde = in.Bidder
 			writeToNodes(c)
+			return &proto.Ack{Message: "ack"}, nil
 
 		} else {
-			c.Clients[c.Leader].MakeBid(context.Background(), &proto.Bid{Amount: in.Amount, Bidder: in.Bidder})
+			b, c := c.Clients[c.Leader].MakeBid(context.Background(), &proto.Bid{Amount: in.Amount, Bidder: in.Bidder})
+
+			if c != nil {
+				if c.IamViceLeader {
+
+					c.IamLeader = true
+					c.Leader = ""
+					c.IamViceLeader = false
+					c.viceLeader = ""
+
+					c.MaxBid = in.Amount
+					c.CurrentBidde = in.Bidder
+					writeToNodes(c)
+					return &proto.Ack{Message: "ack"}, nil
+
+				} else {
+
+					Findleader(c)
+					b, c := c.Clients[c.Leader].MakeBid(context.Background(), &proto.Bid{Amount: in.Amount, Bidder: in.Bidder})
+
+					if c != nil {
+						// This code could use a loop
+						c.Clients[c.viceLeader].CantFindLeader(context.Background(), &proto.NodeType{Type: true})
+						time.Sleep(3 * time.Second)
+						Findleader(c)
+						a, d := c.Clients[c.Leader].MakeBid(context.Background(), &proto.Bid{Amount: in.Amount, Bidder: in.Bidder})
+
+						if a != nil {
+							log.Printf("This code could use a loop")
+						} else {
+							d = d
+							return &proto.Ack{Message: "ack"}, nil
+						}
+
+					} else {
+						return &proto.Ack{Message: "ack"}, nil
+					}
+				}
+			} else {
+
+				b = b
+
+			}
+
 			// if ack == "ack" {
 
 			// }
@@ -177,6 +242,12 @@ func (c *Client) Start() {
 	if c.IamLeader == false {
 		if c.Leader == "" {
 			Findleader(c)
+		}
+	}
+
+	if c.IamViceLeader == false {
+		if c.viceLeader == "" {
+			ViceFindleader(c)
 		}
 	}
 
@@ -272,6 +343,7 @@ func (c *Client) GreetAll() {
 			if c.IamLeader == true {
 				if c.viceLeader == "" {
 					c.viceLeader = kventry.Key
+					c.Clients[kventry.Key].YouTheViceLeader(context.Background(), &proto.Request{Message: "You are my vice leader"})
 				}
 			}
 		}
@@ -292,6 +364,29 @@ func Findleader(c *Client) {
 			log.Print(r.Leader)
 			if r.Leader {
 				c.Leader = key
+
+			}
+
+			if r == nil {
+
+			}
+			if t == nil {
+
+			}
+
+		}
+	}
+}
+
+func ViceFindleader(c *Client) {
+
+	for key, element := range c.Clients {
+		if key != "Why do I need to use key!!!!!" {
+			r, t := element.AreYouTheViceLeader(context.Background(), &proto.Request{Name: "Are you the leader"})
+
+			log.Print(r.viceLeader)
+			if r.viceLeader {
+				c.viceLeader = key
 
 			}
 

@@ -5,10 +5,13 @@ package proto;
 
 service CriticalService {
     rpc AreYouTheLeader (Request) returns (Reply) {}
+    rpc AreYouTheViceLeader (Request) returns (Reply) {}
+    rpc YouTheViceLeader (Request) returns (ack) {}
     rpc MakeBid (bid) returns (ack) {}
     rpc getResult (AskForResult) returns (result) {}
     rpc leaderWrite (bid) returns (ack) {}
     rpc getnodeType (ack) returns (nodeType) {}
+    rpc cantFindLeader (nodeType) returns (ack) {}
 }
 
 message Request {

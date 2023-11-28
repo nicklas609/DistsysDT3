@@ -74,14 +74,20 @@ func getRes(c *Client) {
 		RequestNode++
 	}
 	for key, element := range c.Clients {
+		log.Print("the node request ", RequestNode)
 		temp++
 		if temp == RequestNode {
 
 			r, t := element.GetResult(context.Background(), &proto.AskForResult{Res: "What is the current result?"})
 			if t != nil || key == "nil" {
 
+				delete(c.Clients, key)
+
+			} else {
+				log.Print(r.Result)
+
 			}
-			log.Print(r.Result)
+
 		}
 
 	}
@@ -105,6 +111,7 @@ func makeBid(c *Client, bid int64) {
 	}
 	for key, element := range c.Clients {
 		temp++
+		log.Print("the node request ", RequestNode)
 		if temp == RequestNode {
 
 			r, t := element.MakeBid(context.Background(), &proto.Bid{Amount: bid, Bidder: c.Username})
@@ -187,7 +194,7 @@ func (c *Client) Start() {
 
 	for {
 		time.Sleep(3 * time.Second)
-		c.GreetAll()
+		//c.GreetAll()
 
 		// for key, element := range c.Clients {
 		// 	if key != "Why do I need to use key!!!!!" {
@@ -242,25 +249,25 @@ func (n *Client) SetupClient(name string, addr string) {
 	log.Print("What is going off2")
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-
-	//defer conn.Close()
-	r, t := proto.NewCriticalServiceClient(conn).GetnodeType(context.Background(), &proto.Ack{Message: "Whats your type"})
-
-	if t != nil {
-		log.Fatalf("Something is wrong here")
-	}
-
-	if r.Type {
-		n.Clients[name] = proto.NewCriticalServiceClient(conn)
-		n.NodesReplies[name] = false
-		n.timeStamp++
+		log.Print("did not connect: %v"+" the node has proberly crashed", err)
 	} else {
 
-		n.Users[name] = proto.NewCriticalServiceClient(conn)
-	}
+		//defer conn.Close()
+		r, t := proto.NewCriticalServiceClient(conn).GetnodeType(context.Background(), &proto.Ack{Message: "Whats your type"})
 
+		if t != nil {
+			log.Fatalf("Something is wrong here")
+		}
+
+		if r.Type {
+			n.Clients[name] = proto.NewCriticalServiceClient(conn)
+			n.NodesReplies[name] = false
+			n.timeStamp++
+		} else {
+
+			n.Users[name] = proto.NewCriticalServiceClient(conn)
+		}
+	}
 }
 
 // Busy Work module, greet every new member you find
