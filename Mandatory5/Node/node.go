@@ -74,17 +74,17 @@ func getRes(c *Client) {
 		RequestNode++
 	}
 	for key, element := range c.Clients {
-		log.Print("the node request ", RequestNode)
+
 		temp++
 		if temp == RequestNode {
-
+			log.Print("Node :", c.Name, " | ", "the node request ", RequestNode)
 			r, t := element.GetResult(context.Background(), &proto.AskForResult{Res: "What is the current result?"})
 			if t != nil || key == "nil" {
 
 				delete(c.Clients, key)
 
 			} else {
-				log.Print(r.Result)
+				log.Print("Current bid", r.Result)
 
 			}
 
@@ -111,14 +111,16 @@ func makeBid(c *Client, bid int64) {
 	}
 	for key, element := range c.Clients {
 		temp++
-		log.Print("the node request ", RequestNode)
+
 		if temp == RequestNode {
+			log.Print("Node :", c.Name, " | ", "the node request ", RequestNode)
 
 			r, t := element.MakeBid(context.Background(), &proto.Bid{Amount: bid, Bidder: c.Username})
 			if t != nil || key == "nil" {
-
+				delete(c.Clients, key)
+			} else {
+				log.Print(r.Message)
 			}
-			log.Print(r.Message)
 		}
 
 	}
@@ -178,7 +180,7 @@ func (c *Client) Start() {
 	c.InCritSys = false
 	c.timeStamp = 1
 	c.Username = ""
-	//f := setLog()
+	f := setLog()
 
 	// start service / listening
 	go c.StartListening()
@@ -204,7 +206,7 @@ func (c *Client) Start() {
 		// }
 
 	}
-	//defer f.Close()
+	defer f.Close()
 }
 
 func menu(c *Client) {
@@ -227,13 +229,13 @@ func menu(c *Client) {
 			getRes(c)
 
 		} else if input == "2" {
-			log.Print("How much do you want to bid?")
+			log.Print("Node :", c.Name, " | ", "How much do you want to bid?")
 			scanner.Scan()
 			bid := scanner.Text()
 			i, err := strconv.Atoi(bid)
 
 			if err != nil {
-				log.Print("Please input a number")
+				log.Print("Node :", c.Name, " | ", "Please input a number")
 			}
 
 			makeBid(c, int64(i))

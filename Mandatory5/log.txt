@@ -1,84 +1,53 @@
-2023/11/28 18:22:49 Successfully registered with Consul.
-2023/11/28 18:23:52 Get "http://localhost:8500/v1/kv/Node?recurse=": dial tcp [::1]:8500: connectex: No connection could be made because the target machine actively refused it.
-2023/11/28 18:24:11 Successfully registered with Consul.
-2023/11/28 18:25:19 Successfully registered with Consul.
-2023/11/28 18:32:43 Successfully registered with Consul.
-2023/11/28 18:32:43 
-2023/11/28 18:33:51 Successfully registered with Consul.
-2023/11/28 18:33:51 I am here
-2023/11/28 18:33:51 I am here
-2023/11/28 18:33:51 
-2023/11/28 18:33:51 I am here too
-2023/11/28 18:34:25 Successfully registered with Consul.
-2023/11/28 18:34:25 I am here do
-2023/11/28 18:34:25 I am here
-2023/11/28 18:34:25 I am here
-2023/11/28 18:34:25 
-2023/11/28 18:34:25 I am here too
-2023/11/28 18:35:10 Successfully registered with Consul.
-2023/11/28 18:35:10 What is going off
-2023/11/28 18:35:11 What is going on
-2023/11/28 18:35:11 What is going oafs
-2023/11/28 18:35:11 What is going off
-2023/11/28 18:35:11 What is going on
-2023/11/28 18:35:11 What is going oafs
-2023/11/28 18:35:11 I am here do
-2023/11/28 18:35:11 I am here
-2023/11/28 18:35:11 I am here
-2023/11/28 18:35:11 
-2023/11/28 18:35:11 I am here too
-2023/11/28 18:35:53 Successfully registered with Consul.
-2023/11/28 18:35:53 What is going off
-2023/11/28 18:35:53 What is going on
-2023/11/28 18:35:53 What is going oafs
-2023/11/28 18:35:53 What is going off
-2023/11/28 18:35:53 What is going on
-2023/11/28 18:35:53 What is going oafs
-2023/11/28 18:35:53 I am here do
-2023/11/28 18:35:53 I am here
-2023/11/28 18:35:53 I am here
-2023/11/28 18:35:53 
-2023/11/28 18:35:53 I am here too
-2023/11/28 18:36:10 Successfully registered with Consul.
-2023/11/28 18:36:10 What is going off2
-2023/11/28 18:36:10 What is going off
-2023/11/28 18:36:10 What is going on
-2023/11/28 18:36:10 What is going oafs
-2023/11/28 18:36:10 What is going off2
-2023/11/28 18:36:10 What is going off
-2023/11/28 18:36:10 What is going on
-2023/11/28 18:36:10 What is going oafs
-2023/11/28 18:36:10 I am here do
-2023/11/28 18:36:10 I am here
-2023/11/28 18:36:10 I am here
-2023/11/28 18:36:10 
-2023/11/28 18:36:10 I am here too
-2023/11/28 18:36:19 Get "http://localhost:8500/v1/kv/Node?recurse=": dial tcp [::1]:8500: connectex: No connection could be made because the target machine actively refused it.
-2023/11/28 18:36:41 Successfully registered with Consul.
-2023/11/28 18:36:41 What is going off2
-2023/11/28 18:36:41 What is going off
-2023/11/28 18:36:41 What is going on
-2023/11/28 18:36:41 What is going oafs
-2023/11/28 18:36:41 What is going off2
-2023/11/28 18:36:41 What is going off
-2023/11/28 18:36:41 What is going on
-2023/11/28 18:36:41 What is going oafs
-2023/11/28 18:36:41 I am here do
-2023/11/28 18:36:41 I am here
-2023/11/28 18:36:41 I am here
-2023/11/28 18:36:41 
-2023/11/28 18:36:41 I am here too
-2023/11/28 18:37:45 Successfully registered with Consul.
-2023/11/28 18:37:45 What is going off2
-2023/11/28 18:37:45 What is going off
-2023/11/28 18:37:45 What is going on
-2023/11/28 18:37:45 What is going oafs
-2023/11/28 18:37:45 What is going off2
-2023/11/28 18:37:45 What is going off
-2023/11/28 18:37:45 What is going on
-2023/11/28 18:37:45 What is going oafs
-2023/11/28 18:37:45 I am here do
-2023/11/28 18:37:45 I am here
-2023/11/28 18:37:45 I am here
-2023/11/28 18:37:45 
-2023/11/28 18:37:45 I am here too
+2023/11/28 21:25:11 Successfully registered with Consul.
+2023/11/28 21:25:11 What is going off2
+2023/11/28 21:25:11 What is going off2
+2023/11/28 21:25:11 What is going off2
+2023/11/28 21:25:11 What is your name
+2023/11/28 21:25:15 Type 1 to see current bid
+2023/11/28 21:25:15 Type 2 to make a bid
+2023/11/28 21:25:18 Successfully registered with Consul.
+2023/11/28 21:25:18 What is going off2
+2023/11/28 21:25:18 What is going off2
+2023/11/28 21:25:18 What is going off2
+2023/11/28 21:25:18 What is your name
+2023/11/28 21:25:22 Type 1 to see current bid
+2023/11/28 21:25:22 Type 2 to make a bid
+//we type 1 here
+2023/11/28 21:25:24 Node :User 1 | the node request 1
+2023/11/28 21:25:24 0
+//we type 1 here
+2023/11/28 21:25:26 Node :User 2 | the node request 3
+2023/11/28 21:25:26 0
+//we type 2 and then 25
+2023/11/28 21:25:30 Node :User 1 | How much do you want to bid?
+2023/11/28 21:25:32 Node :User 1 | the node request 1
+2023/11/28 21:25:32 ack
+//we type 1 here
+2023/11/28 21:25:36 Node :User 1 | the node request 1
+2023/11/28 21:25:36 25
+//we type 1 here
+2023/11/28 21:25:38 Node :User 2 | the node request 1
+2023/11/28 21:25:38 25
+//we type 2 and then 30
+2023/11/28 21:25:38 Node :User 2 | How much do you want to bid?
+2023/11/28 21:25:40 Node :User 2 | the node request 3
+2023/11/28 21:25:40 ack
+//we type 1 here
+2023/11/28 21:25:41 Node :User 2 | the node request 1
+2023/11/28 21:25:41 30
+After here we crashed the leader node and //we type 2 and then 80
+2023/11/28 21:25:45 Node :User 1 | the node request 3
+2023/11/28 21:25:47 Node :User 1 | How much do you want to bid?
+2023/11/28 21:25:49 Node :User 1 | the node request 2
+2023/11/28 21:25:49 ack
+2023/11/28 21:25:52 Node :User 1 | the node request 1
+2023/11/28 21:25:52 80
+2023/11/28 21:25:54 Node :User 2 | the node request 1
+//we type 2 and then 110
+2023/11/28 21:25:55 Node :User 2 | How much do you want to bid?
+2023/11/28 21:25:57 Node :User 2 | the node request 2
+2023/11/28 21:25:57 ack
+//we type 1 here
+2023/11/28 21:26:01 Node :User 1 | the node request 1
+2023/11/28 21:26:04 110
+
